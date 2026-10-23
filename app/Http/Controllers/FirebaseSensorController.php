@@ -6,6 +6,7 @@ use App\Services\FirebaseService;
 use App\Models\Sensor;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\Rule;
 
 class FirebaseSensorController extends Controller
 {
@@ -91,9 +92,12 @@ class FirebaseSensorController extends Controller
         $totalSensors = count($activeSensors);
         $totalReadings = 0;
         $alerts = 0;
-        $avgTemperature = 0;
-        $avgHumidity = 0;
-        $count = 0;
+        $avgTemperature = null;
+        $avgHumidity = null;
+        $temperatureCount = 0;
+        $humidityCount = 0;
+        $temperatureTotal = 0;
+        $humidityTotal = 0;
 
         if ($sensorData) {
             foreach ($sensorData as $sensorId => $sensor) {
@@ -101,11 +105,12 @@ class FirebaseSensorController extends Controller
                     $totalReadings += count($sensor['lecturas']);
                     foreach ($sensor['lecturas'] as $reading) {
                         if (isset($reading['temperatura'])) {
-                            $avgTemperature += $reading['temperatura'];
-                            $count++;
+                            $temperatureTotal += (float) $reading['temperatura'];
+                            $temperatureCount++;
                         }
                         if (isset($reading['humedad'])) {
-                            $avgHumidity += $reading['humedad'];
+                            $humidityTotal += (float) $reading['humedad'];
+                            $humidityCount++;
                         }
                     }
                 }
@@ -115,10 +120,8 @@ class FirebaseSensorController extends Controller
             }
         }
 
-        if ($count > 0) {
-            $avgTemperature /= $count;
-            $avgHumidity /= $count;
-        }
+        if ($temperatureCount > 0) $avgTemperature = $temperatureTotal / $temperatureCount;
+        if ($humidityCount > 0) $avgHumidity = $humidityTotal / $humidityCount;
 
         $esp32Mac = config('esp32.mac', env('ESP32_MAC', '00:4B:12:35:3E:00'));
         $macClean = str_replace(':', '', $esp32Mac);
@@ -171,64 +174,38 @@ class FirebaseSensorController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'sensor_id' => 'required|string|max:100',
+        $data = $request->validate([
+            'sensor_id' => ['required', 'string', 'max:100', 'alpha_dash', Rule::unique('sensors', 'device_id')],
             'tipo' => 'required|in:movimiento_tierra,gases_toxicos,signos_vitales',
-            'area' => 'required|string|max:100',
+            'area_id' => 'required|integer|exists:areas,id',
         ]);
 
-        // Resolver area_id desde el nombre
-        $area = \App\Models\Area::where('nombre', $request->area)->first();
-        $areaId = $area ? $area->id : null;
+        $area = \App\Models\Area::findOrFail($data['area_id']);
 
         $sensorData = [
             'activo' => true,
-            'tipo' => $request->tipo,
-            'area' => $request->area,
-            'ultima_lectura' => now()->toISOString(),
-            'alertas' => [],
+            'tipo' => $data['tipo'],
+            'area' => $area->nombre,
             'lecturas' => [],
-            'ultima_actualizacion' => now()->toISOString(),
         ];
 
-        switch ($request->tipo) {
-            case 'movimiento_tierra':
-                $sensorData['movimiento'] = 0.0;
-                $sensorData['aceleracion'] = 0.0;
-                break;
-            case 'gases_toxicos':
-                $sensorData['co'] = 0.0;
-                $sensorData['co2'] = 400.0;
-                $sensorData['metano'] = 0.0;
-                $sensorData['oxigeno'] = 21.0;
-                break;
-            case 'signos_vitales':
-                $sensorData['frecuencia_cardiaca'] = 70;
-                $sensorData['temperatura_corporal'] = 36.5;
-                $sensorData['saturacion_oxigeno'] = 98;
-                $sensorData['presion_arterial'] = '120/80';
-                break;
-        }
+        // Registrar únicamente metadatos; las mediciones llegan del dispositivo real.
+        $localSensor = Sensor::create([
+            'device_id' => $data['sensor_id'],
+            'nombre' => $data['sensor_id'],
+            'area_id' => $area->id,
+            'activo' => true,
+            'estado' => 'activo',
+        ]);
 
-        // Guardar en base de datos local (siempre)
-        $localSensor = Sensor::firstOrCreate(
-            ['device_id' => $request->sensor_id],
-            [
-                'nombre' => $request->sensor_id,
-                'area_id' => $areaId,
-                'activo' => true,
-                'estado' => 'activo',
-            ]
-        );
-
-        // Intentar guardar en Firebase
-        $firebaseSuccess = $this->firebaseService->sendSensorData($request->sensor_id, $sensorData);
+        // Crear el registro remoto sin fabricar una lectura.
+        $firebaseSuccess = $this->firebaseService->sendSensorData($data['sensor_id'], $sensorData);
 
         $message = 'Sensor creado exitosamente en el sistema local';
         $type = 'success';
 
         if ($firebaseSuccess) {
-            $message = 'Sensor creado exitosamente en Firebase y sistema local';
+            $message = 'Sensor registrado en Firebase y en el sistema local; aún no tiene lecturas recibidas.';
         } else {
             $message .= ' (Firebase no disponible, funciona solo localmente)';
             $type = 'warning';
@@ -239,7 +216,7 @@ class FirebaseSensorController extends Controller
             'CREAR_SENSOR',
             'sensors',
             $localSensor->id,
-            "Sensor {$request->sensor_id} de tipo {$request->tipo} creado en área {$request->area}"
+            "Sensor {$data['sensor_id']} de tipo {$data['tipo']} registrado en área {$area->nombre}"
         );
 
         return redirect()->route('sensor-dashboard')->with($type, $message);

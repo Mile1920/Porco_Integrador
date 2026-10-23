@@ -9,12 +9,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 var desc = this.dataset.desc || '';
                 var area = this.dataset.area || '';
                 var gravedad = this.dataset.gravedad || '';
-                modalBody.innerHTML = '<p><strong>Área:</strong> ' + area + '</p><p><strong>Gravedad:</strong> ' + gravedad + '</p><hr><p>' + desc + '</p>';
+                mostrarDetalle(modalBody, [['Área', area], ['Gravedad', gravedad]], desc);
             } else if (type === 'trabajador'){
                 var nombre = this.dataset.nombre || '';
                 var ci = this.dataset.ci || '';
                 var area = this.dataset.area || '';
-                modalBody.innerHTML = '<p><strong>Nombre:</strong> ' + nombre + '</p><p><strong>CI:</strong> ' + ci + '</p><p><strong>Área:</strong> ' + area + '</p>';
+                mostrarDetalle(modalBody, [['Nombre', nombre], ['CI', ci], ['Área', area]]);
             }
             if (window.jQuery && $('#detailModal').modal) {
                 $('#detailModal').modal('show');
@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     labels: labels,
                     datasets: [{
                         data: data,
-                        borderColor: '#007bff',
-                        backgroundColor: 'rgba(0,123,255,0.15)',
+                        borderColor: '#c52d59',
+                        backgroundColor: 'rgba(197,45,89,0.15)',
                         tension: 0.3,
                         pointRadius: 0
                     }]
@@ -52,3 +52,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+function mostrarDetalle(contenedor, campos, descripcion) {
+    var fragmento = document.createDocumentFragment();
+    campos.forEach(function (campo) {
+        var p = document.createElement('p');
+        var strong = document.createElement('strong');
+        strong.textContent = campo[0] + ': ';
+        p.append(strong, document.createTextNode(campo[1] || '—'));
+        fragmento.appendChild(p);
+    });
+    if (descripcion !== undefined) {
+        var hr = document.createElement('hr');
+        var p = document.createElement('p');
+        p.textContent = descripcion;
+        fragmento.append(hr, p);
+    }
+    contenedor.replaceChildren(fragmento);
+}

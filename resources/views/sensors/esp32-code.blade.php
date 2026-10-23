@@ -20,6 +20,7 @@
                 <li>Conectá un buzzer al pin GPIO26</li>
                 <li>Cambiá <code>WIFI_SSID</code> y <code>WIFI_PASSWORD</code> con los datos de tu red WiFi</li>
                 <li>Cambiá <code>SERVIDOR</code> por la IP de este servidor (ej: 192.168.1.204)</li>
+                <li>El código mostrado ya incluye la clave de <code>SENSOR_SECRET</code>. Si descargás el archivo <code>.ino</code>, reemplazá <code>CONFIGURAR_SENSOR_SECRET</code> por esa misma clave antes de compilar; no publiques el archivo con la clave.</li>
                 <li>El ESP32 enviará lecturas cada 10 segundos a <code>{{ url('api/sensor/esp32/recibir') }}</code></li>
             </ol>
         </div>
@@ -41,11 +42,12 @@
 #include &lt;HTTPClient.h&gt;
 
 // ============ CONFIGURACIÓN ============
-const char* WIFI_SSID     = "AXS_2.4G_7FZKk3";
-const char* WIFI_PASSWORD = "se977KxA";
+const char* WIFI_SSID     = "CONFIGURAR_WIFI_SSID";
+const char* WIFI_PASSWORD = "CONFIGURAR_WIFI_PASSWORD";
 const char* SERVIDOR      = "http://192.168.1.205:8000";
 const char* ENDPOINT      = "/api/sensor/esp32/recibir";
 const char* DEVICE_ID     = "esp32_gases_01";
+const char* SENSOR_KEY    = "{{ $sensorKey }}";
 // =======================================
 
 // Pines
@@ -157,6 +159,7 @@ void enviarDatos(int mq7, int mq135, bool alerta) {
 
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
+    http.addHeader("X-SENSOR-KEY", SENSOR_KEY);
 
     String payload = "{";
     payload += "\"device_id\":\"" + String(DEVICE_ID) + "\",";

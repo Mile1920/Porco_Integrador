@@ -42,13 +42,13 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label>Área *</label>
-                                <select name="area" class="form-control" required>
+                                <select name="area_id" class="form-control" required>
                                     <option value="">Seleccionar área</option>
                                     @foreach($areas as $area)
-                                        <option value="{{ $area->nombre }}">{{ $area->nombre }} ({{ $area->nivel ?? 'Sin nivel' }})</option>
+                                        <option value="{{ $area->id }}" @selected(old('area_id') == $area->id)>{{ $area->nombre }} ({{ $area->nivel ?? 'Sin nivel' }})</option>
                                     @endforeach
                                 </select>
-                                <small class="text-muted">El área ya incluye información de nivel</small>
+                                <small class="text-muted">El área ya incluye información de nivel. Las lecturas aparecen cuando el dispositivo real las envía.</small>
                             </div>
                         </div>
                     </div>

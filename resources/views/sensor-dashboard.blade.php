@@ -86,7 +86,7 @@
                                     <i class="fas fa-sensor"></i>
                                 </div>
                                 <p class="card-category" style="font-size: 1.2rem; font-weight: bold;">Sensores Activos</p>
-                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: #4CAF50;">{{ $totalSensors }}</h3>
+                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: var(--porco-normal);">{{ $totalSensors }}</h3>
                             </div>
                             <div class="card-footer text-center">
                                 <div class="stats">
@@ -102,7 +102,7 @@
                                     <i class="fas fa-chart-bar"></i>
                                 </div>
                                 <p class="card-category" style="font-size: 1.2rem; font-weight: bold;">Lecturas Totales</p>
-                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: #2196F3;">{{ $totalReadings }}</h3>
+                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: var(--porco-info);">{{ $totalReadings }}</h3>
                             </div>
                             <div class="card-footer text-center">
                                 <div class="stats">
@@ -118,7 +118,7 @@
                                     <i class="fas fa-exclamation-triangle"></i>
                                 </div>
                                 <p class="card-category" style="font-size: 1.2rem; font-weight: bold;">Alertas</p>
-                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: #FF9800;">{{ $alerts }}</h3>
+                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: var(--porco-warning);">{{ $alerts }}</h3>
                             </div>
                             <div class="card-footer text-center">
                                 <div class="stats">
@@ -134,7 +134,7 @@
                                     <i class="fas fa-thermometer-half"></i>
                                 </div>
                                 <p class="card-category" style="font-size: 1.2rem; font-weight: bold;">Temp. Promedio</p>
-                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: #FF9800;">{{ number_format($avgTemperature, 1) }}°C</h3>
+                                <h3 class="card-title" style="font-size: 3rem; font-weight: bold; color: var(--porco-warning);">{{ $avgTemperature === null ? '—' : number_format($avgTemperature, 1).'°C' }}</h3>
                             </div>
                             <div class="card-footer text-center">
                                 <div class="stats">
@@ -174,8 +174,8 @@
                                                 <td class="text-primary">{{ $lectura->created_at->format('H:i:s') }}</td>
                                                 <td>
                                                     @if(is_array($lectura->payload))
-                                                        <span class="badge {{ ($lectura->payload['mq7_co'] ?? 0) > 2200 ? 'badge-danger' : 'badge-secondary' }}">
-                                                            {{ $lectura->payload['mq7_co'] ?? '?' }}
+                                                        <span class="badge {{ !isset($lectura->payload['mq7_co']) ? 'badge-secondary' : ($lectura->payload['mq7_co'] > 2200 ? 'badge-danger' : 'badge-success') }}">
+                                                            {{ $lectura->payload['mq7_co'] ?? 'Sin dato' }}
                                                         </span>
                                                     @else
                                                         <span class="text-muted">-</span>
@@ -183,8 +183,8 @@
                                                 </td>
                                                 <td>
                                                     @if(is_array($lectura->payload))
-                                                        <span class="badge {{ ($lectura->payload['mq135_aire'] ?? 0) > 2850 ? 'badge-danger' : 'badge-secondary' }}">
-                                                            {{ $lectura->payload['mq135_aire'] ?? '?' }}
+                                                        <span class="badge {{ !isset($lectura->payload['mq135_aire']) ? 'badge-secondary' : ($lectura->payload['mq135_aire'] > 2850 ? 'badge-danger' : 'badge-success') }}">
+                                                            {{ $lectura->payload['mq135_aire'] ?? 'Sin dato' }}
                                                         </span>
                                                     @else
                                                         <span class="text-muted">-</span>
@@ -193,7 +193,9 @@
                                                 <td>{{ is_array($lectura->payload) ? ($lectura->payload['temperatura'] ?? '-') : '-' }}</td>
                                                 <td>{{ is_array($lectura->payload) ? ($lectura->payload['humedad'] ?? '-') : '-' }}</td>
                                                 <td>
-                                                    @if($lectura->payload['alerta'] ?? false)
+                                                    @if(!is_array($lectura->payload) || !array_key_exists('alerta', $lectura->payload))
+                                                        <span class="badge badge-secondary">Sin estado</span>
+                                                    @elseif($lectura->payload['alerta'])
                                                         <span class="badge badge-danger">⚠ ALERTA</span>
                                                     @else
                                                         <span class="badge badge-success">Normal</span>
@@ -610,8 +612,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     Object.keys(sensorData).forEach(sensorId => {
         labels.push(sensorId);
-        temperatures.push(sensorData[sensorId].temperatura || 0);
-        humidities.push(sensorData[sensorId].humedad || 0);
+        temperatures.push(sensorData[sensorId].temperatura ?? null);
+        humidities.push(sensorData[sensorId].humedad ?? null);
     });
 
     // Gráfico de temperatura
@@ -623,8 +625,8 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Temperatura (°C)',
                 data: temperatures,
-                backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(197, 45, 89, 0.6)',
+                borderColor: 'rgba(197, 45, 89, 1)',
                 borderWidth: 1
             }]
         },
@@ -647,8 +649,8 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Humedad (%)',
                 data: humidities,
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(255, 107, 74, 0.6)',
+                borderColor: 'rgba(255, 107, 74, 1)',
                 borderWidth: 1
             }]
         },
@@ -802,7 +804,7 @@ function actualizarUIEsp32(data) {
     const statusDiv = document.getElementById('esp32Status');
 
     if (data.connected) {
-        statusEl.innerHTML = '<span style="color:#4CAF50;font-size:1.2rem"><i class="fas fa-check-circle"></i> Conectado</span>';
+        statusEl.innerHTML = '<span style="color:var(--porco-normal);font-size:1.2rem"><i class="fas fa-check-circle"></i> Conectado</span>';
         statusDiv.style.background = '#e8f5e9';
         if (data.ultima_conexion) {
             const d = new Date(data.ultima_conexion);
@@ -811,7 +813,7 @@ function actualizarUIEsp32(data) {
             latencyEl.textContent = '';
         }
     } else {
-        statusEl.innerHTML = '<span style="color:#f44336;font-size:1.2rem"><i class="fas fa-times-circle"></i> Desconectado</span>';
+        statusEl.innerHTML = '<span style="color:var(--porco-critical);font-size:1.2rem"><i class="fas fa-times-circle"></i> Desconectado</span>';
         statusDiv.style.background = '#ffebee';
         if (data.minutos_sin_datos !== null && data.minutos_sin_datos !== undefined) {
             latencyEl.textContent = 'Sin datos desde hace ' + data.minutos_sin_datos + ' min';

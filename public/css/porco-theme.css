@@ -1,0 +1,564 @@
+/* Identidad visual del Centro Minero Porco Illapa.
+   Los colores semánticos de seguridad se mantienen independientes de la marca. */
+:root {
+    --porco-wine: #651c38;
+    --porco-raspberry: #c52d59;
+    --porco-coral: #ff6b4a;
+    --porco-gold: #e9ae25;
+    --porco-ivory: #fff8f2;
+    --porco-white: #ffffff;
+    --porco-ink: #42172c;
+    --porco-muted: #694b54;
+    --porco-border: #e8d8cd;
+    --porco-normal: #166534;
+    --porco-normal-bg: #dcfce7;
+    --porco-warning: #854d0e;
+    --porco-warning-bg: #fef3c7;
+    --porco-critical: #b91c1c;
+    --porco-critical-bg: #fee2e2;
+    --porco-info: #1d4ed8;
+    --porco-info-bg: #dbeafe;
+    --porco-anomaly: #6b21a8;
+    --porco-anomaly-bg: #f3e8ff;
+}
+
+body.main-app,
+body#appBody {
+    background: var(--porco-ivory) !important;
+    color: var(--porco-ink) !important;
+    font-family: "Segoe UI", Arial, sans-serif !important;
+    font-size: 16px;
+    line-height: 1.55;
+}
+
+body#appBody .main-panel,
+body#appBody .content,
+body#appBody .container-fluid {
+    background-color: var(--porco-ivory);
+    color: var(--porco-ink);
+}
+
+body#appBody .main-panel {
+    min-height: 100vh;
+}
+
+body#appBody .content {
+    padding-top: 82px;
+}
+
+body#appBody .navbar.navbar-transparent {
+    background: var(--porco-white) !important;
+    box-shadow: 0 2px 14px rgb(66 23 44 / 8%);
+    border-bottom: 1px solid var(--porco-border);
+}
+
+body#appBody .navbar .navbar-brand,
+body#appBody .navbar .nav-link,
+body#appBody .navbar .material-icons {
+    color: var(--porco-ink) !important;
+}
+
+body#appBody .sidebar,
+body#appBody .sidebar[data-background-color="black"] {
+    background: var(--porco-wine) !important;
+    box-shadow: 3px 0 18px rgb(66 23 44 / 15%);
+}
+
+body#appBody .sidebar .logo,
+body#appBody .sidebar .sidebar-wrapper {
+    background: var(--porco-wine) !important;
+}
+
+body#appBody .sidebar .logo .simple-text,
+body#appBody .sidebar .nav .nav-link,
+body#appBody .sidebar .nav .nav-link span,
+body#appBody .sidebar .nav .nav-link i {
+    color: var(--porco-white) !important;
+    opacity: 1 !important;
+    font-weight: 600;
+}
+
+body#appBody .sidebar .nav .nav-link {
+    min-height: 48px;
+    margin: 3px 10px;
+    padding: 11px 14px;
+    border-radius: 8px;
+    transition: background-color .18s ease, color .18s ease;
+}
+
+body#appBody .sidebar .nav li.active > .nav-link,
+body#appBody .sidebar .nav .nav-link:hover {
+    color: var(--porco-white) !important;
+    background: var(--porco-raspberry) !important;
+    box-shadow: none !important;
+}
+
+body#appBody .sidebar .nav .nav-link:focus-visible,
+body#appBody .navbar a:focus-visible {
+    outline: 3px solid var(--porco-gold);
+    outline-offset: 2px;
+}
+
+body#appBody .card,
+body#appBody .modal-content,
+body#appBody .dropdown-menu,
+body#appBody .list-group-item {
+    color: var(--porco-ink);
+    background-color: var(--porco-white);
+    border-color: var(--porco-border);
+}
+
+body#appBody .card {
+    border: 1px solid var(--porco-border);
+    border-radius: 12px;
+    box-shadow: 0 5px 18px rgb(66 23 44 / 6%);
+}
+
+body#appBody .card-header:not(.card-header-primary) {
+    color: var(--porco-ink);
+    background: #fff1e9;
+    border-color: var(--porco-border);
+}
+
+body#appBody .card[style*="linear-gradient" i],
+body#appBody .card-header[style*="linear-gradient" i],
+body#appBody .mini-card[style*="linear-gradient" i] {
+    color: var(--porco-white) !important;
+    background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)) !important;
+    border-color: var(--porco-wine) !important;
+}
+
+body#appBody .card-header-primary,
+body#appBody .bg-primary,
+body#appBody .btn-primary,
+body#appBody .badge-primary,
+body#appBody .page-item.active .page-link {
+    color: var(--porco-white) !important;
+    background: var(--porco-raspberry) !important;
+    border-color: var(--porco-raspberry) !important;
+}
+
+/* Neutraliza colores de marca escritos en línea por las vistas antiguas. */
+body#appBody [style*="background" i][style*="#50c878" i],
+body#appBody [style*="background" i][style*="#2e8b57" i] {
+    background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)) !important;
+    border-color: var(--porco-wine) !important;
+}
+
+body#appBody [style*="background" i][style*="#2196f3" i],
+body#appBody [style*="background" i][style*="#0d47a1" i],
+body#appBody [style*="background" i][style*="#00a5cf" i] {
+    background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)) !important;
+    border-color: var(--porco-wine) !important;
+}
+
+body#appBody [style*="background" i][style*="#ff9800" i],
+body#appBody [style*="background" i][style*="#f57c00" i] {
+    background: var(--porco-gold) !important;
+    border-color: var(--porco-gold) !important;
+    color: var(--porco-ink) !important;
+}
+
+body#appBody .card-title[style*="#4caf50" i] { color: var(--porco-normal) !important; }
+body#appBody .card-title[style*="#2196f3" i] { color: var(--porco-wine) !important; }
+body#appBody .card-title[style*="#ff9800" i] { color: var(--porco-warning) !important; }
+
+body#appBody .btn-primary:hover,
+body#appBody .btn-primary:focus {
+    background: var(--porco-wine) !important;
+    border-color: var(--porco-wine) !important;
+}
+
+body#appBody .btn-secondary,
+body#appBody .btn-info,
+body#appBody .bg-info {
+    color: var(--porco-white) !important;
+    background: var(--porco-wine) !important;
+    border-color: var(--porco-wine) !important;
+}
+
+body#appBody .btn-warning,
+body#appBody .bg-warning {
+    color: var(--porco-ink) !important;
+    background: var(--porco-gold) !important;
+    border-color: var(--porco-gold) !important;
+}
+
+body#appBody a:not(.btn):not(.nav-link):not(.page-link) {
+    color: var(--porco-raspberry);
+}
+
+body#appBody a:not(.btn):not(.nav-link):not(.page-link):hover {
+    color: var(--porco-wine);
+}
+
+body#appBody h1,
+body#appBody h2,
+body#appBody h3,
+body#appBody h4,
+body#appBody h5,
+body#appBody h6,
+body#appBody label,
+body#appBody .card-title,
+body#appBody .table,
+body#appBody .form-control,
+body#appBody .custom-select {
+    color: var(--porco-ink);
+}
+
+body#appBody label,
+body#appBody .form-label,
+body#appBody .input-label {
+    font-weight: 600;
+}
+
+body#appBody input[type="checkbox"],
+body#appBody input[type="radio"] {
+    accent-color: var(--porco-raspberry);
+}
+
+body#appBody button,
+body#appBody .btn {
+    min-height: 42px;
+}
+
+body#appBody .btn-sm {
+    min-height: 36px;
+}
+
+body#appBody small,
+body#appBody .small,
+body#appBody .text-muted,
+body#appBody .form-text {
+    color: var(--porco-muted) !important;
+}
+
+body#appBody .form-control,
+body#appBody .custom-select,
+body#appBody select,
+body#appBody textarea {
+    min-height: 42px;
+    color: var(--porco-ink) !important;
+    background-color: var(--porco-white) !important;
+    border: 1px solid var(--porco-border) !important;
+    border-radius: 7px;
+}
+
+body#appBody .form-control::placeholder,
+body#appBody textarea::placeholder {
+    color: var(--porco-muted) !important;
+    opacity: 1;
+}
+
+body#appBody .form-control:focus,
+body#appBody .custom-select:focus,
+body#appBody select:focus,
+body#appBody textarea:focus,
+body#appBody button:focus-visible,
+body#appBody a:focus-visible {
+    border-color: var(--porco-raspberry) !important;
+    outline: 3px solid rgb(197 45 89 / 25%);
+    outline-offset: 1px;
+    box-shadow: none;
+}
+
+body#appBody .is-invalid,
+body#appBody .form-control.is-invalid {
+    border-color: var(--porco-critical) !important;
+}
+
+body#appBody .invalid-feedback,
+body#appBody .text-danger {
+    color: var(--porco-critical) !important;
+}
+
+body#appBody .table {
+    color: var(--porco-ink);
+    background-color: var(--porco-white);
+}
+
+body#appBody .table thead th {
+    color: var(--porco-ink);
+    background: #f8eee8;
+    border-color: var(--porco-border);
+    font-weight: 700;
+}
+
+body#appBody .table td,
+body#appBody .table th {
+    border-color: var(--porco-border);
+    vertical-align: middle;
+}
+
+body#appBody .table-hover tbody tr:hover {
+    background-color: #fff1e9;
+}
+
+body#appBody .table-responsive {
+    border: 1px solid var(--porco-border);
+    border-radius: 8px;
+}
+
+/* Estados de seguridad: texto, icono y explicación permanecen en la vista. */
+body#appBody .badge-success,
+body#appBody .alert-success,
+body#appBody .status-normal {
+    color: var(--porco-normal) !important;
+    background: var(--porco-normal-bg) !important;
+}
+
+body#appBody .badge-warning,
+body#appBody .alert-warning,
+body#appBody .status-warning {
+    color: var(--porco-warning) !important;
+    background: var(--porco-warning-bg) !important;
+}
+
+body#appBody .badge-danger,
+body#appBody .alert-danger,
+body#appBody .status-critical {
+    color: var(--porco-critical) !important;
+    background: var(--porco-critical-bg) !important;
+}
+
+body#appBody .badge-info,
+body#appBody .alert-info,
+body#appBody .status-info {
+    color: var(--porco-info) !important;
+    background: var(--porco-info-bg) !important;
+}
+
+body#appBody .status-anomaly {
+    color: var(--porco-anomaly) !important;
+    background: var(--porco-anomaly-bg) !important;
+}
+
+body#appBody .text-success { color: var(--porco-normal) !important; }
+body#appBody .text-warning { color: var(--porco-warning) !important; }
+body#appBody .text-info { color: var(--porco-info) !important; }
+
+body#appBody .icon-img { object-fit: contain; max-width: 30px; max-height: 30px; }
+body#appBody .dropdown-item { color: var(--porco-ink); }
+body#appBody .dropdown-item:hover,
+body#appBody .dropdown-item:focus { color: var(--porco-ink); background: #fff1e9; }
+body#appBody .page-link { color: var(--porco-raspberry); border-color: var(--porco-border); }
+
+/* Pantalla pública y acceso usan la misma paleta y controles legibles. */
+.login-container {
+    color: var(--porco-ink) !important;
+    background: var(--porco-white) !important;
+    border: 1px solid var(--porco-border) !important;
+    box-shadow: 0 16px 42px rgb(66 23 44 / 12%) !important;
+}
+
+body:not(#appBody) {
+    color: var(--porco-ink) !important;
+    background: var(--porco-ivory) !important;
+    font-family: "Segoe UI", Arial, sans-serif !important;
+    font-size: 16px;
+}
+
+body:not(#appBody) .nav-glass {
+    background: var(--porco-wine) !important;
+    border-bottom: 2px solid var(--porco-coral);
+    box-shadow: 0 4px 20px rgb(66 23 44 / 18%);
+}
+
+body:not(#appBody) .nav-glass h1,
+body:not(#appBody) .nav-links a:not(.btn-primary) {
+    color: var(--porco-white) !important;
+}
+
+body:not(#appBody) .nav-glass h1 {
+    background: none !important;
+    -webkit-text-fill-color: var(--porco-white) !important;
+    text-shadow: none;
+}
+
+body:not(#appBody) .nav-links a:focus-visible,
+body:not(#appBody) .footer a:focus-visible {
+    outline: 3px solid var(--porco-gold);
+    outline-offset: 3px;
+}
+
+body:not(#appBody) .nav-links a.btn-primary,
+body:not(#appBody) .nav-links a.btn-primary:hover {
+    color: var(--porco-white) !important;
+    background: var(--porco-raspberry) !important;
+    border: 1px solid var(--porco-raspberry);
+}
+
+body:not(#appBody) .hero {
+    width: min(1200px, calc(100% - 32px));
+    padding: clamp(44px, 8vw, 96px) clamp(20px, 6vw, 80px);
+    background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry));
+    border: 1px solid var(--porco-wine);
+    border-radius: 20px;
+    box-shadow: 0 14px 34px rgb(66 23 44 / 16%);
+}
+
+body:not(#appBody) .hero h2,
+body:not(#appBody) .hero p {
+    color: var(--porco-white) !important;
+    background: none !important;
+    -webkit-text-fill-color: var(--porco-white) !important;
+}
+
+body:not(#appBody) .hero p {
+    max-width: 760px;
+    font-size: 1.15rem;
+}
+
+body:not(#appBody) .stat-card,
+body:not(#appBody) .feature-card,
+body:not(#appBody) .step {
+    color: var(--porco-ink);
+    background: var(--porco-white) !important;
+    border: 1px solid var(--porco-border);
+    box-shadow: 0 5px 18px rgb(66 23 44 / 7%);
+}
+
+body:not(#appBody) .stat-card::before,
+body:not(#appBody) .feature-card::after { display: none; }
+
+body:not(#appBody) .stat-number {
+    color: var(--porco-wine);
+    background: none;
+    -webkit-text-fill-color: var(--porco-wine);
+}
+
+body:not(#appBody) .stat-label,
+body:not(#appBody) .feature-card p,
+body:not(#appBody) .step p,
+body:not(#appBody) .footer-section p,
+body:not(#appBody) .footer-section a {
+    color: var(--porco-muted) !important;
+}
+
+body:not(#appBody) .feature-card h3,
+body:not(#appBody) .step h4,
+body:not(#appBody) .section-title {
+    color: var(--porco-ink) !important;
+    background: none !important;
+    -webkit-text-fill-color: var(--porco-ink) !important;
+}
+
+body:not(#appBody) .feature-icon {
+    color: var(--porco-white);
+    background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry));
+}
+
+body:not(#appBody) .step-number {
+    color: var(--porco-ink);
+    background: var(--porco-gold);
+    box-shadow: none;
+}
+
+body:not(#appBody) .footer {
+    color: var(--porco-white);
+    background: var(--porco-wine);
+    border-top: 3px solid var(--porco-coral);
+}
+
+body:not(#appBody) .footer-section h3,
+body:not(#appBody) .footer-section a:hover {
+    color: var(--porco-white) !important;
+}
+
+@media (max-width: 767.98px) {
+    body:not(#appBody) .nav-glass nav { padding: 12px 16px; }
+    body:not(#appBody) .nav-links { gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    body:not(#appBody) .nav-links a { font-size: .9rem; }
+    body:not(#appBody) .hero { margin-top: 7rem; }
+    body:not(#appBody) .hero h2 { font-size: 2.2rem; }
+    body:not(#appBody) .features-grid { grid-template-columns: 1fr; }
+}
+
+.login-header-text h1 {
+    background: none !important;
+    color: var(--porco-wine) !important;
+    -webkit-text-fill-color: var(--porco-wine) !important;
+}
+
+.login-header-text p,
+.footer-text { color: var(--porco-muted) !important; }
+.footer-text a { color: var(--porco-raspberry) !important; }
+
+.login-container .input-group input {
+    color: var(--porco-ink) !important;
+    background: var(--porco-white) !important;
+    border: 1px solid var(--porco-border) !important;
+}
+
+.login-container .input-group input::placeholder { color: var(--porco-muted) !important; }
+.login-container .input-group input:focus { border-color: var(--porco-raspberry) !important; }
+.toggle-password { color: var(--porco-muted) !important; }
+
+.btn-login {
+    color: var(--porco-white) !important;
+    background: var(--porco-raspberry) !important;
+    box-shadow: 0 6px 18px rgb(197 45 89 / 24%) !important;
+}
+
+.btn-login:hover { background: var(--porco-wine) !important; }
+
+.login-container :focus-visible,
+.nav-links a:focus-visible {
+    outline: 3px solid var(--porco-gold) !important;
+    outline-offset: 3px;
+}
+
+.porco-auth-shell {
+    color: var(--porco-ink) !important;
+    background: var(--porco-ivory) !important;
+    font-family: "Segoe UI", Arial, sans-serif !important;
+}
+
+.porco-auth-card {
+    color: var(--porco-ink) !important;
+    background: var(--porco-white) !important;
+    border: 1px solid var(--porco-border);
+    box-shadow: 0 12px 34px rgb(66 23 44 / 10%);
+}
+
+.porco-auth-card input,
+.porco-auth-card select,
+.porco-auth-card textarea {
+    color: var(--porco-ink) !important;
+    background: var(--porco-white) !important;
+    border-color: var(--porco-border) !important;
+}
+
+.porco-auth-card input:focus,
+.porco-auth-card select:focus,
+.porco-auth-card textarea:focus,
+.porco-auth-card button:focus-visible {
+    border-color: var(--porco-raspberry) !important;
+    outline: 3px solid rgb(197 45 89 / 25%) !important;
+    outline-offset: 2px;
+}
+
+.porco-auth-card button {
+    color: var(--porco-white) !important;
+    background: var(--porco-raspberry) !important;
+}
+
+.porco-auth-card button:hover { background: var(--porco-wine) !important; }
+
+@media (max-width: 767.98px) {
+    body#appBody .content { padding: 76px 8px 20px; }
+    body#appBody .container-fluid { padding-right: 10px; padding-left: 10px; }
+    body#appBody .card-body { padding: 16px; }
+    body#appBody .card-body { overflow-x: auto; }
+    body#appBody .navbar .navbar-brand { max-width: 60vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    body#appBody .table { min-width: 600px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body#appBody *, body#appBody *::before, body#appBody *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+}

@@ -72,7 +72,7 @@
 
 <div class="row mb-4">
     <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-        <div class="mini-card" style="background: linear-gradient(135deg, #50c878, #2e8b57); color: #fff;">
+        <div class="mini-card" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: #fff;">
             <div class="d-flex align-items-center">
                 <div class="icon-circle me-3" style="background: rgba(255,255,255,0.2);">
                     <i class="material-icons">people</i>
@@ -85,7 +85,7 @@
         </div>
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-        <div class="mini-card" style="background: linear-gradient(135deg, #2196f3, #0d47a1); color: #fff;">
+        <div class="mini-card" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: #fff;">
             <div class="d-flex align-items-center">
                 <div class="icon-circle me-3" style="background: rgba(255,255,255,0.2);">
                     <i class="material-icons">login</i>
@@ -98,7 +98,7 @@
         </div>
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-        <div class="mini-card" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: #fff;">
+        <div class="mini-card" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: #fff;">
             <div class="d-flex align-items-center">
                 <div class="icon-circle me-3" style="background: rgba(255,255,255,0.2);">
                     <i class="material-icons">logout</i>
@@ -111,7 +111,7 @@
         </div>
     </div>
     <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-        <div class="mini-card" style="background: linear-gradient(135deg, #e91e63, #880e4f); color: #fff;">
+        <div class="mini-card" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: #fff;">
             <div class="d-flex align-items-center">
                 <div class="icon-circle me-3" style="background: rgba(255,255,255,0.2);">
                     <i class="material-icons">warning</i>
@@ -119,6 +119,19 @@
                 <div>
                     <div class="stat-value">{{ $incidentesAbiertos }}</div>
                     <div class="stat-label">Incidentes Abiertos</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+        <div class="mini-card" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: #fff;">
+            <div class="d-flex align-items-center">
+                <div class="icon-circle me-3" style="background: rgba(255,255,255,0.2);">
+                    <i class="material-icons">notifications_active</i>
+                </div>
+                <div>
+                    <div class="stat-value">{{ $alertasPeriodo }}</div>
+                    <div class="stat-label">Alertas Generadas</div>
                 </div>
             </div>
         </div>
@@ -184,7 +197,7 @@ $gravedadData = $incidentesPorGravedad->values();
     <div class="col-lg-8 mb-4">
         <div class="card chart-card">
             <div class="card-header">
-                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">trending_up</i> Ingresos/Salidas — Últimos 7 Días</h4>
+                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">trending_up</i> Ingresos/Salidas {{ request('desde') ? '— ' . request('desde') . ' a ' . request('hasta', date('Y-m-d')) : '— Últimos 7 Días' }}</h4>
             </div>
             <div class="card-body">
                 <div class="chart-container"><canvas id="chart7d" style="height:300px;"></canvas></div>
@@ -220,7 +233,7 @@ $gravedadData = $incidentesPorGravedad->values();
     <div class="col-lg-6 mb-4">
         <div class="card chart-card">
             <div class="card-header">
-                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">access_time</i> Ingresos Hoy por Hora</h4>
+                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">access_time</i> Ingresos por Hora {{ request('desde') ? '— ' . request('desde') . ' a ' . request('hasta', date('Y-m-d')) : '— Hoy' }}</h4>
             </div>
             <div class="card-body">
                 <div class="chart-container"><canvas id="chartHoras" style="height:300px;"></canvas></div>
@@ -245,11 +258,61 @@ $gravedadData = $incidentesPorGravedad->values();
     <div class="col-lg-6 mb-4">
         <div class="card chart-card">
             <div class="card-header">
-                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">date_range</i> Incidentes — Últimos 6 Meses</h4>
+                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">date_range</i> Incidentes {{ request('desde') ? '— ' . request('desde') . ' a ' . request('hasta', date('Y-m-d')) : '— Últimos 6 Meses' }}</h4>
             </div>
             <div class="card-body">
                 <div class="chart-container"><canvas id="chartIncMes" style="height:300px;"></canvas></div>
                 <div class="chart-fallback" id="fallbackIncMes">Gráfico no disponible</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas section -->
+<div class="row">
+    <div class="col-lg-6 mb-4">
+        <div class="card chart-card">
+            <div class="card-header">
+                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">notifications_active</i> Alertas por Tipo</h4>
+            </div>
+            <div class="card-body">
+                <div class="row text-center mb-3">
+                    <div class="col-6">
+                        <h1 class="text-danger font-weight-bold" style="font-size: 2.5rem;">{{ $alertasPeriodo }}</h1>
+                        <small class="text-muted">Alertas totales</small>
+                    </div>
+                    <div class="col-6">
+                        <h1 class="text-danger font-weight-bold" style="font-size: 2.5rem;">{{ $alertasCriticas }}</h1>
+                        <small class="text-muted">Alertas críticas</small>
+                    </div>
+                </div>
+                <div class="chart-container"><canvas id="chartAlertasTipo" style="height:250px;"></canvas></div>
+                <div class="chart-fallback" id="fallbackAlertasTipo">Gráfico no disponible</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card chart-card">
+            <div class="card-header">
+                <h4 class="card-title"><i class="material-icons" style="vertical-align: middle;">warning</i> Últimas Alertas</h4>
+            </div>
+            <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+                @php
+                    $ultimasAlertas = \App\Models\Alerta::orderBy('fecha_alerta', 'desc')->limit(10)->get();
+                @endphp
+                @forelse($ultimasAlertas as $alerta)
+                    <div class="d-flex align-items-start mb-2 p-2 rounded" style="background: rgba(255,0,0,0.08); border-left: 4px solid {{ $alerta->nivel === 'critico' ? 'var(--porco-critical)' : ($alerta->nivel === 'alto' ? 'var(--porco-warning)' : 'var(--porco-info)') }};">
+                        <i class="material-icons mr-2" style="color: {{ $alerta->nivel === 'critico' ? 'var(--porco-critical)' : 'var(--porco-warning)' }};">{{ $alerta->nivel === 'critico' ? 'warning' : 'info' }}</i>
+                        <div class="flex-grow-1">
+                            <small class="font-weight-bold">{{ $alerta->origen }}</small><br>
+                            <small>{{ Str::limit($alerta->mensaje, 60) }}</small>
+                            <br><small class="text-muted">{{ $alerta->fecha_alerta->format('d/m H:i') }}</small>
+                        </div>
+                        <span class="badge badge-{{ $alerta->nivel === 'critico' ? 'danger' : ($alerta->nivel === 'alto' ? 'warning' : 'info') }} badge-pill">{{ $alerta->nivel }}</span>
+                    </div>
+                @empty
+                    <p class="text-muted text-center">No hay alertas registradas</p>
+                @endforelse
             </div>
         </div>
     </div>
@@ -271,9 +334,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     loadChartJS(function() {
-        var isDark = document.body.classList.contains('dark-edition');
-        var textColor = isDark ? '#e0e6f0' : '#333';
-        var gridColor = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+        var cssColor = function (token) {
+            return getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+        };
+        var textColor = cssColor('--porco-ink');
+        var gridColor = 'rgba(66,23,44,0.12)';
 
         var chartDefaults = {
             responsive: true, maintainAspectRatio: false,
@@ -290,8 +355,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 data: {
                     labels: @json($labels7d),
                     datasets: [
-                        { label: 'Ingresos', data: @json($ingresos7d), backgroundColor: '#50c878', borderRadius: 6 },
-                        { label: 'Salidas', data: @json($salidas7d), backgroundColor: '#ff9800', borderRadius: 6 }
+                        { label: 'Ingresos', data: @json($ingresos7d), backgroundColor: cssColor('--porco-wine'), borderRadius: 6 },
+                        { label: 'Salidas', data: @json($salidas7d), backgroundColor: cssColor('--porco-coral'), borderRadius: 6 }
                     ]
                 },
                 options: Object.assign({}, chartDefaults, { scales: scales, plugins: { legend: { labels: { color: textColor, font: { size: 12 } }, position: 'top' } } })
@@ -303,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'doughnut',
                 data: {
                     labels: @json($turnosLabels),
-                    datasets: [{ data: @json($turnosData), backgroundColor: ['#50c878', '#2196f3', '#9c27b0'], borderWidth: 0 }]
+                    datasets: [{ data: @json($turnosData), backgroundColor: [cssColor('--porco-wine'), cssColor('--porco-raspberry'), cssColor('--porco-gold')], borderWidth: 0 }]
                 },
                 options: Object.assign({}, chartDefaults, { plugins: { legend: { labels: { color: textColor, font: { size: 12 } }, position: 'bottom' } } })
             });
@@ -314,7 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'bar',
                 data: {
                     labels: @json($areasLabels),
-                    datasets: [{ label: 'Trabajadores', data: @json($areasData), backgroundColor: '#00a5cf', borderRadius: 6 }]
+                    datasets: [{ label: 'Trabajadores', data: @json($areasData), backgroundColor: cssColor('--porco-raspberry'), borderRadius: 6 }]
                 },
                 options: Object.assign({}, chartDefaults, { scales: scales, indexAxis: 'y', plugins: { legend: { display: false } } })
             });
@@ -325,7 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'line',
                 data: {
                     labels: @json($horasLabels),
-                    datasets: [{ label: 'Ingresos', data: @json($horasData), borderColor: '#50c878', backgroundColor: 'rgba(80,200,120,0.15)', fill: true, tension: 0.4, pointRadius: 4 }]
+                    datasets: [{ label: 'Ingresos', data: @json($horasData), borderColor: cssColor('--porco-raspberry'), backgroundColor: 'rgba(197,45,89,0.15)', fill: true, tension: 0.4, pointRadius: 4 }]
                 },
                 options: Object.assign({}, chartDefaults, { scales: scales, plugins: { legend: { display: false } } })
             });
@@ -336,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'doughnut',
                 data: {
                     labels: @json($gravedadLabels),
-                    datasets: [{ data: @json($gravedadData), backgroundColor: ['#ff9800', '#e91e63', '#9c27b0', '#f44336'], borderWidth: 0 }]
+                    datasets: [{ data: @json($gravedadData), backgroundColor: [cssColor('--porco-warning'), cssColor('--porco-raspberry'), cssColor('--porco-anomaly'), cssColor('--porco-critical')], borderWidth: 0 }]
                 },
                 options: Object.assign({}, chartDefaults, { plugins: { legend: { labels: { color: textColor, font: { size: 12 } }, position: 'bottom' } } })
             });
@@ -347,11 +412,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 type: 'line',
                 data: {
                     labels: @json($labels6m),
-                    datasets: [{ label: 'Incidentes', data: @json($incidentes6m), borderColor: '#e91e63', backgroundColor: 'rgba(233,30,99,0.12)', fill: true, tension: 0.4, pointRadius: 4 }]
+                    datasets: [{ label: 'Incidentes', data: @json($incidentes6m), borderColor: cssColor('--porco-raspberry'), backgroundColor: 'rgba(197,45,89,0.12)', fill: true, tension: 0.4, pointRadius: 4 }]
                 },
                 options: Object.assign({}, chartDefaults, { scales: scales, plugins: { legend: { display: false } } })
             });
         } catch(e) { document.getElementById('fallbackIncMes').style.display = 'block'; }
+
+        try {
+            var alertasLabels = @json($alertasPorTipo->keys());
+            var alertasData = @json($alertasPorTipo->values());
+            if (alertasLabels.length > 0) {
+                new Chart(document.getElementById('chartAlertasTipo'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: alertasLabels,
+                        datasets: [{ data: alertasData, backgroundColor: [cssColor('--porco-critical'), cssColor('--porco-warning'), cssColor('--porco-info'), cssColor('--porco-normal'), cssColor('--porco-anomaly')], borderWidth: 0 }]
+                    },
+                    options: Object.assign({}, chartDefaults, { plugins: { legend: { labels: { color: textColor, font: { size: 12 } }, position: 'bottom' } } })
+                });
+            } else {
+                document.getElementById('fallbackAlertasTipo').style.display = 'block';
+                document.getElementById('fallbackAlertasTipo').textContent = 'Sin datos de alertas';
+            }
+        } catch(e) { document.getElementById('fallbackAlertasTipo').style.display = 'block'; }
     });
 });
 

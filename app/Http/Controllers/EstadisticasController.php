@@ -7,6 +7,7 @@ use App\Models\Area;
 use App\Models\Ingreso;
 use App\Models\Incidente;
 use App\Models\Cargo;
+use App\Models\Alerta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -31,22 +32,48 @@ class EstadisticasController extends Controller
 
     private function getData($user, Request $request = null)
     {
-        $desde = $request && $request->filled('desde') ? \Carbon\Carbon::parse($request->desde) : today()->subDays(30);
+        $filtrando = $request && ($request->filled('desde') || $request->filled('hasta'));
+        $desde = $request && $request->filled('desde') ? \Carbon\Carbon::parse($request->desde)->startOfDay() : today()->subDays(30);
         $hasta = $request && $request->filled('hasta') ? \Carbon\Carbon::parse($request->hasta)->endOfDay() : today()->endOfDay();
 
-        $totalTrabajadores = Trabajador::where('activo', true)->count();
+        $areaRestringida = null;
+        if ($user->hasRole('administrador-area') && $user->trabajador && $user->trabajador->area_id) {
+            $areaRestringida = $user->trabajador->area_id;
+        }
+
+        $totalTrabajadores = $areaRestringida
+            ? Trabajador::where('activo', true)->where('area_id', $areaRestringida)->count()
+            : Trabajador::where('activo', true)->count();
         $totalAreas = Area::where('activo', true)->count();
         $totalCargos = Cargo::where('activo', true)->count();
 
-        $ingresosHoy = Ingreso::whereDate('registrado_en', today())->count();
-        $salidasHoy = Ingreso::whereDate('registrado_en', today())->where('tipo', 'salida')->count();
-        $ingresosMes = Ingreso::whereMonth('registrado_en', now()->month)->count();
-        $salidasMes = Ingreso::whereMonth('registrado_en', now()->month)->where('tipo', 'salida')->count();
+        // Usar el rango de fechas para todas las consultas cuando hay filtro
+        $fechaRefInicio = $filtrando ? $desde : today()->startOfDay();
+        $fechaRefFin = $filtrando ? $hasta : today()->endOfDay();
 
-        $incidentesAbiertos = Incidente::where('estado', 'pendiente')->count();
-        $incidentesPendientes = Incidente::where('estado', 'pendiente')->count();
-        $incidentesCerrados = Incidente::where('estado', 'completado')->count();
-        $incidentesCriticos = Incidente::where('gravedad', 'critica')->count();
+        $ingresosHoy = Ingreso::whereBetween('registrado_en', [$fechaRefInicio, $fechaRefFin])->where('tipo', 'ingreso')->when($areaRestringida, fn($q) => $q->whereHas('trabajador', fn($qq) => $qq->where('area_id', $areaRestringida)))->count();
+        $salidasHoy = Ingreso::whereBetween('registrado_en', [$fechaRefInicio, $fechaRefFin])->where('tipo', 'salida')->when($areaRestringida, fn($q) => $q->whereHas('trabajador', fn($qq) => $qq->where('area_id', $areaRestringida)))->count();
+        $ingresosMes = $ingresosHoy;
+        $salidasMes = $salidasHoy;
+
+        $incidentesAbiertos = Incidente::where('estado', 'pendiente')->whereBetween('created_at', [$fechaRefInicio, $fechaRefFin])->when($areaRestringida, fn($q) => $q->where('area_id', $areaRestringida))->count();
+        $incidentesPendientes = $incidentesAbiertos;
+        $incidentesCerrados = Incidente::where('estado', 'completado')->whereBetween('created_at', [$fechaRefInicio, $fechaRefFin])->when($areaRestringida, fn($q) => $q->where('area_id', $areaRestringida))->count();
+        $incidentesCriticos = Incidente::where('gravedad', 'alta')->whereBetween('created_at', [$fechaRefInicio, $fechaRefFin])->when($areaRestringida, fn($q) => $q->where('area_id', $areaRestringida))->count();
+
+        // Alertas del período
+        $alertasPeriodo = Alerta::whereBetween('fecha_alerta', [$fechaRefInicio, $fechaRefFin])
+            ->when($areaRestringida, fn($q) => $q->where('area', $areaRestringida))
+            ->count();
+        $alertasCriticas = Alerta::whereBetween('fecha_alerta', [$fechaRefInicio, $fechaRefFin])
+            ->where('nivel', 'critico')
+            ->when($areaRestringida, fn($q) => $q->where('area', $areaRestringida))
+            ->count();
+        $alertasPorTipo = Alerta::whereBetween('fecha_alerta', [$fechaRefInicio, $fechaRefFin])
+            ->when($areaRestringida, fn($q) => $q->where('area', $areaRestringida))
+            ->select('tipo', DB::raw('count(*) as total'))
+            ->groupBy('tipo')
+            ->pluck('total', 'tipo');
 
         $turnos = Trabajador::where('activo', true)
             ->select('turno', DB::raw('count(*) as total'))
@@ -58,48 +85,49 @@ class EstadisticasController extends Controller
         }])->get()->map(function ($a) {
             return ['label' => $a->nombre, 'value' => $a->trabajadores_count];
         });
+        if ($areaRestringida && $user->trabajador?->area) {
+            $trabajadoresPorArea = $trabajadoresPorArea->filter(fn($a) => $a['label'] === $user->trabajador->area->nombre)->values();
+        }
 
+        // Gráfico de ingresos/salidas: por día dentro del rango (o últimos 7 si no hay filtro)
         $ingresos7d = collect();
         $salidas7d = collect();
         $labels7d = collect();
-        for ($i = 6; $i >= 0; $i--) {
-            $dia = today()->subDays($i);
+        $diasAtras = $filtrando ? min(30, (int) $desde->diffInDays($hasta)) : 6;
+        for ($i = $diasAtras; $i >= 0; $i--) {
+            $dia = $hasta->copy()->subDays($i);
             $labels7d->push($dia->format('d/m'));
-            $ingresos7d->push(Ingreso::whereDate('registrado_en', $dia)->where('tipo', 'ingreso')->count());
-            $salidas7d->push(Ingreso::whereDate('registrado_en', $dia)->where('tipo', 'salida')->count());
+            $ingresos7d->push(Ingreso::whereDate('registrado_en', $dia)->where('tipo', 'ingreso')
+                ->when($areaRestringida, fn($q, $aid) => $q->whereHas('trabajador', fn($qq) => $qq->where('area_id', $aid)))
+                ->count());
+            $salidas7d->push(Ingreso::whereDate('registrado_en', $dia)->where('tipo', 'salida')
+                ->when($areaRestringida, fn($q, $aid) => $q->whereHas('trabajador', fn($qq) => $qq->where('area_id', $aid)))
+                ->count());
         }
 
-        $horasPico = Ingreso::whereDate('registrado_en', today())
+        $horasPico = Ingreso::whereBetween('registrado_en', [$fechaRefInicio, $fechaRefFin])
+            ->when($areaRestringida, fn($q) => $q->whereHas('trabajador', fn($qq) => $qq->where('area_id', $areaRestringida)))
             ->select(DB::raw("EXTRACT(HOUR FROM registrado_en) as hora"), DB::raw('count(*) as total'))
             ->groupBy('hora')
             ->orderBy('hora')
             ->pluck('total', 'hora');
 
-        $incidentesPorGravedad = Incidente::select('gravedad', DB::raw('count(*) as total'))
+        $incidentesPorGravedad = Incidente::whereBetween('created_at', [$fechaRefInicio, $fechaRefFin])
+            ->when($areaRestringida, fn($q) => $q->where('area_id', $areaRestringida))
+            ->select('gravedad', DB::raw('count(*) as total'))
             ->groupBy('gravedad')
             ->pluck('total', 'gravedad');
 
+        // Incidentes por mes: dentro del rango (o últimos 6 si no hay filtro)
         $incidentes6m = collect();
         $labels6m = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $mes = now()->subMonths($i);
+        $mesesAtras = $filtrando ? max(0, (int) $desde->diffInMonths($hasta)) : 5;
+        for ($i = $mesesAtras; $i >= 0; $i--) {
+            $mes = $hasta->copy()->subMonths($i);
             $labels6m->push($mes->format('M Y'));
-            $incidentes6m->push(Incidente::whereYear('created_at', $mes->year)->whereMonth('created_at', $mes->month)->count());
-        }
-
-        $areaRestringida = null;
-        if ($user->hasRole('administrador-area') && $user->trabajador && $user->trabajador->area_id) {
-            $areaRestringida = $user->trabajador->area_id;
-            $totalTrabajadores = Trabajador::where('activo', true)->where('area_id', $areaRestringida)->count();
-            $trabajadoresPorArea = $trabajadoresPorArea->filter(fn($a) => $a['label'] === $user->trabajador->area->nombre);
-            $ingresosHoy = Ingreso::whereDate('registrado_en', today())->whereHas('trabajador', fn($q) => $q->where('area_id', $areaRestringida))->count();
-            $salidasHoy = Ingreso::whereDate('registrado_en', today())->where('tipo', 'salida')->whereHas('trabajador', fn($q) => $q->where('area_id', $areaRestringida))->count();
-            $ingresosMes = Ingreso::whereMonth('registrado_en', now()->month)->whereHas('trabajador', fn($q) => $q->where('area_id', $areaRestringida))->count();
-            $salidasMes = Ingreso::whereMonth('registrado_en', now()->month)->where('tipo', 'salida')->whereHas('trabajador', fn($q) => $q->where('area_id', $areaRestringida))->count();
-            $incidentesAbiertos = Incidente::where('estado', 'pendiente')->where('area_id', $areaRestringida)->count();
-            $incidentesPendientes = Incidente::where('estado', 'pendiente')->where('area_id', $areaRestringida)->count();
-            $incidentesCerrados = Incidente::where('estado', 'completado')->where('area_id', $areaRestringida)->count();
-            $incidentesCriticos = Incidente::where('gravedad', 'critica')->where('area_id', $areaRestringida)->count();
+            $incidentes6m->push(Incidente::whereYear('created_at', $mes->year)->whereMonth('created_at', $mes->month)
+                ->when($areaRestringida, fn($q, $aid) => $q->where('area_id', $aid))
+                ->count());
         }
 
         // Tabla de datos del período filtrado
@@ -142,7 +170,8 @@ class EstadisticasController extends Controller
             'turnos', 'trabajadoresPorArea',
             'ingresos7d', 'salidas7d', 'labels7d', 'horasPico',
             'incidentesPorGravedad', 'incidentes6m', 'labels6m',
-            'areaRestringida', 'dataTable'
+            'areaRestringida', 'dataTable',
+            'alertasPeriodo', 'alertasCriticas', 'alertasPorTipo'
         );
     }
 }

@@ -9,6 +9,14 @@ class AuditController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'accion' => 'nullable|string|max:100',
+            'tabla' => 'nullable|string|max:50',
+            'busqueda' => 'nullable|string|max:200',
+            'desde' => 'nullable|date',
+            'hasta' => 'nullable|date|after_or_equal:desde',
+        ]);
+
         $query = Auditoria::with('usuario')->orderBy('Fecha', 'desc');
 
         if ($request->filled('accion')) {

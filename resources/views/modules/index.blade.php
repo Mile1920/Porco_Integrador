@@ -16,122 +16,120 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Trabajadores</h5>
-                                <p class="card-text small mb-2">Registro y administración del personal</p>
-                                <a href="{{ route('trabajadores.index') }}" class="btn btn-primary btn-sm">Ir</a>
-                            </div>
-                            <img src="{{ asset('img/Minero.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-rose d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Trabajadores</strong>
+                            <img src="{{ asset('img/Minero.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Registro y administración del personal. Los trabajadores pueden registrar ingreso/salida desde su perfil.</p>
+                            <a href="{{ route('trabajadores.index') }}" class="btn btn-rose">Ir a Trabajadores</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Áreas</h5>
-                                <p class="card-text small mb-2">Gestión de áreas y niveles</p>
-                                <a href="{{ route('areas.index') }}" class="btn btn-primary btn-sm">Ir</a>
-                            </div>
-                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-primary d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Áreas</strong>
+                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Gestión de áreas, niveles y subniveles de la mina.</p>
+                            <a href="{{ route('areas.index') }}" class="btn btn-primary">Ir a Áreas</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Cargos</h5>
-                                <p class="card-text small mb-2">Administrar cargos y permisos</p>
-                                <a href="{{ route('cargos.index') }}" class="btn btn-primary btn-sm">Ir</a>
-                            </div>
-                            <img src="{{ asset('img/Minero.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-info d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Cargos</strong>
+                            <img src="{{ asset('img/Minero.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Administrar cargos y permisos del personal minero.</p>
+                            <a href="{{ route('cargos.index') }}" class="btn btn-info">Ir a Cargos</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Incidentes</h5>
-                                <p class="card-text small mb-2">Validar y cerrar incidentes</p>
-                                <a href="{{ route('incidentes.index') }}" class="btn btn-primary btn-sm">Ir</a>
-                            </div>
-                            <img src="{{ asset('img/Seguridad.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-warning d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Incidentes</strong>
+                            <img src="{{ asset('img/Seguridad.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Validar y cerrar incidentes reportados por trabajadores o detectados por sensores.</p>
+                            <a href="{{ route('incidentes.index') }}" class="btn btn-warning">Ir a Incidentes</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Sensores</h5>
-                                <p class="card-text small mb-2">Monitoreo de sensores y dispositivos</p>
-                                <div>
-                                    <a href="{{ route('sensors.index') }}" class="btn btn-primary btn-sm">Ver datos</a>
-                                    <a href="{{ route('sensors.devices.index') }}" class="btn btn-outline-primary btn-sm">Dispositivos</a>
-                                </div>
-                            </div>
-                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-success d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Sensores</strong>
+                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Monitoreo de sensores, dispositivos y recepción de datos.</p>
+                            <a href="{{ route('sensors.index') }}" class="btn btn-success">Ver datos</a>
+                            <a href="{{ route('sensors.devices.index') }}" class="btn btn-outline-success">Dispositivos</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Mina 2D</h5>
-                                <p class="card-text small mb-2">Plano de niveles y sensores</p>
-                                <a href="{{ route('business.flow.mine2d') }}" class="btn btn-primary btn-sm">Ver mapa</a>
-                            </div>
-                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-primary d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Mina 2D</strong>
+                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Plano de niveles y sensores en vista rápida 2D.</p>
+                            <a href="{{ route('business.flow.mine2d') }}" class="btn btn-primary">Ver mapa</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Solicitudes</h5>
-                                <p class="card-text small mb-2">Solicitudes de herramientas</p>
-                                <a href="{{ route('mi.solicitar') }}" class="btn btn-primary btn-sm">Solicitar</a>
-                                <a href="{{ route('tool_requests.index') }}" class="btn btn-outline-primary btn-sm">Ver</a>
-                            </div>
-                            <img src="{{ asset('img/Minero.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-info d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Solicitudes</strong>
+                            <img src="{{ asset('img/Minero.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Los trabajadores pueden solicitar herramientas desde su perfil.</p>
+                            <a href="{{ route('mi.solicitar') }}" class="btn btn-info">Solicitar herramienta</a>
+                            <a href="{{ route('tool_requests.index') }}" class="btn btn-outline-info">Ver Solicitudes</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Estadísticas</h5>
-                                <p class="card-text small mb-2">Reportes gráficos y exportables</p>
-                                <a href="{{ route('estadisticas.index') }}" class="btn btn-primary btn-sm">Ver</a>
-                            </div>
-                            <img src="{{ asset('img/Logo.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-success d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Estadísticas</strong>
+                            <img src="{{ asset('img/Logo.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Reportes gráficos y exportables del sistema.</p>
+                            <a href="{{ route('estadisticas.index') }}" class="btn btn-success">Ver Estadísticas</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body d-flex align-items-center justify-content-between">
-                            <div>
-                                <h5 class="card-title mb-1">Control Grupal</h5>
-                                <p class="card-text small mb-2">Ingreso/salida grupal por área</p>
-                                <a href="{{ route('control-grupal') }}" class="btn btn-primary btn-sm">Ir</a>
-                            </div>
-                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" style="width:40px;height:40px;object-fit:contain;opacity:0.7;">
+                    <div class="card">
+                        <div class="card-header card-header-warning d-flex align-items-center justify-content-between">
+                            <strong class="text-white">Control Grupal</strong>
+                            <img src="{{ asset('img/Monitoreo.png') }}" alt="" class="icon-img-small" style="width:28px;height:28px;filter:brightness(0)invert(1);">
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Ingreso y salida grupal de trabajadores por área.</p>
+                            <a href="{{ route('control-grupal') }}" class="btn btn-warning">Ir a Control Grupal</a>
                         </div>
                     </div>
                 </div>

@@ -17,6 +17,7 @@
 
     <!-- Tu CSS personalizado -->
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/porco-theme.css') }}" rel="stylesheet">
 
     @stack('styles')
 </head>
@@ -43,6 +44,13 @@
                     <div class="collapse navbar-collapse justify-content-end">
                         <ul class="navbar-nav">
                             <!-- Theme Toggle -->
+                            <li class="nav-item d-flex align-items-center me-3">
+                                <!-- Indicador de alertas activas -->
+                                <a class="nav-link" href="{{ route('alerts.index') }}" title="Alertas activas" style="position:relative; cursor:pointer;">
+                                    <i class="material-icons" style="font-size: 24px; vertical-align: middle;">notifications</i>
+                                    <span id="alertBadge" class="badge badge-danger" style="position:absolute; top:2px; right:2px; font-size:0.65rem; min-width:18px; height:18px; line-height:12px; border-radius:50%; display:none;">0</span>
+                                </a>
+                            </li>
                             <li class="nav-item d-flex align-items-center me-3">
                                 <a class="nav-link" href="#" onclick="toggleTheme(); return false;" title="Cambiar tema" style="cursor:pointer;">
                                     <i class="material-icons" id="themeIcon" style="font-size: 24px; vertical-align: middle;">dark_mode</i>
@@ -104,6 +112,11 @@
     <script src="{{ asset('js/app.js') }}"></script>
 
     @stack('scripts')
+
+    <!-- Modal de Emergencia Global -->
+    @auth
+        @include('partials.emergency-alert-modal')
+    @endauth
 
     <!-- Theme Toggle -->
     <script>

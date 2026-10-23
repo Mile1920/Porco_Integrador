@@ -54,34 +54,63 @@
 <script>
 function actualizarLista() {
     const tbody = document.getElementById('backupsBody');
-    tbody.innerHTML = '<tr><td colspan="4" class="text-center">Cargando...</td></tr>';
+    mostrarEstadoBackups(tbody, 'Cargando...');
 
     fetch('{{ route("backup.list") }}')
         .then(r => r.json())
         .then(data => {
-            if (!data.success || !data.backups.length) {
-                tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No hay backups disponibles</td></tr>';
+            if (!data.success || !Array.isArray(data.backups) || !data.backups.length) {
+                mostrarEstadoBackups(tbody, 'No hay backups disponibles', 'text-muted');
                 return;
             }
-            tbody.innerHTML = data.backups.map(b => `
-                <tr>
-                    <td><code>${b.file}</code></td>
-                    <td>${b.size_formatted}</td>
-                    <td>${b.date}</td>
-                    <td>
-                        <a href="{{ url('/api/backups/download') }}/${b.file}" class="btn btn-sm btn-primary" title="Descargar">
-                            <i class="fas fa-download"></i>
-                        </a>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarBackup('${b.file}')" title="Eliminar">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+            const fragment = document.createDocumentFragment();
+            data.backups.forEach(function(backup) {
+                const row = document.createElement('tr');
+                const fileCell = document.createElement('td');
+                const code = document.createElement('code');
+                code.textContent = backup.file || '';
+                fileCell.appendChild(code);
+                row.appendChild(fileCell);
+                [backup.size_formatted, backup.date].forEach(function(value) {
+                    const cell = document.createElement('td');
+                    cell.textContent = value || '—';
+                    row.appendChild(cell);
+                });
+                const actions = document.createElement('td');
+                const download = document.createElement('a');
+                download.href = '{{ url('/api/backups/download') }}/' + encodeURIComponent(backup.file || '');
+                download.className = 'btn btn-sm btn-primary';
+                download.title = 'Descargar';
+                const downloadIcon = document.createElement('i');
+                downloadIcon.className = 'fas fa-download';
+                download.appendChild(downloadIcon);
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'btn btn-sm btn-danger';
+                remove.title = 'Eliminar';
+                const removeIcon = document.createElement('i');
+                removeIcon.className = 'fas fa-trash';
+                remove.appendChild(removeIcon);
+                remove.addEventListener('click', () => eliminarBackup(backup.file || ''));
+                actions.append(download, remove);
+                row.appendChild(actions);
+                fragment.appendChild(row);
+            });
+            tbody.replaceChildren(fragment);
         })
         .catch(() => {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Error al cargar backups</td></tr>';
+            mostrarEstadoBackups(tbody, 'Error al cargar backups', 'text-danger');
         });
+}
+
+function mostrarEstadoBackups(tbody, mensaje, clase = '') {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 4;
+    cell.className = 'text-center ' + clase;
+    cell.textContent = mensaje;
+    row.appendChild(cell);
+    tbody.replaceChildren(row);
 }
 
 function crearBackup() {

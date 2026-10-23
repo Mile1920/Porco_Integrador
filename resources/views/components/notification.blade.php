@@ -67,13 +67,13 @@
 
 .alert-success {
     background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-    border-left: 4px solid #28a745;
+    border-left: 4px solid var(--porco-normal);
     color: #155724;
 }
 
 .alert-danger {
     background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-    border-left: 4px solid #dc3545;
+    border-left: 4px solid var(--porco-critical);
     color: #721c24;
 }
 
@@ -85,7 +85,7 @@
 
 .alert-info {
     background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-    border-left: 4px solid #17a2b8;
+    border-left: 4px solid var(--porco-info);
     color: #0c5460;
 }
 

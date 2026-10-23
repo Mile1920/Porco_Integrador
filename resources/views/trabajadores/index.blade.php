@@ -47,22 +47,41 @@
 @push('scripts')
 <script>
 function openIngresoModal(trabajadorId, nombre) {
-    document.getElementById('ingresoModalLabel').innerHTML = 'Registrar Ingreso — ' + nombre;
-    document.getElementById('ingresoForm').action = '/trabajadores/' + trabajadorId + '/ingreso';
+    document.getElementById('ingresoModalLabel').textContent = 'Registrar Ingreso — ' + nombre;
+    document.getElementById('ingresoForm').action = '/trabajadores/' + encodeURIComponent(trabajadorId) + '/ingreso';
     $('#ingresoModal').modal('show');
 }
 
 function openSalidaModal(trabajadorId, nombre) {
-    document.getElementById('salidaModalLabel').innerHTML = 'Registrar Salida — ' + nombre;
-    document.getElementById('salidaForm').action = '/trabajadores/' + trabajadorId + '/salida';
+    document.getElementById('salidaModalLabel').textContent = 'Registrar Salida — ' + nombre;
+    document.getElementById('salidaForm').action = '/trabajadores/' + encodeURIComponent(trabajadorId) + '/salida';
     $('#salidaModal').modal('show');
 }
 
 function openReportModal(trabajadorId, nombre) {
-    document.getElementById('reportModalLabel').innerHTML = 'Reportar Condición — ' + nombre;
-    document.getElementById('reportForm').action = '/trabajadores/' + trabajadorId + '/reportar';
+    document.getElementById('reportModalLabel').textContent = 'Reportar Condición — ' + nombre;
+    document.getElementById('reportForm').action = '/trabajadores/' + encodeURIComponent(trabajadorId) + '/reportar';
     $('#reportModal').modal('show');
 }
+
+document.addEventListener('click', function(event) {
+    const actionButton = event.target.closest('[data-worker-action]');
+    if (actionButton) {
+        const action = actionButton.dataset.workerAction;
+        const args = [actionButton.dataset.workerId, actionButton.dataset.workerName || ''];
+        if (action === 'ingreso') openIngresoModal(...args);
+        if (action === 'salida') openSalidaModal(...args);
+        return;
+    }
+
+    const confirmButton = event.target.closest('.confirm-form-action');
+    if (!confirmButton) return;
+    event.preventDefault();
+    const form = confirmButton.closest('form');
+    if (!form) return;
+    systemConfirm(confirmButton.dataset.confirmMessage || '¿Confirmar esta acción?')
+        .then(confirmed => { if (confirmed) form.requestSubmit(confirmButton); });
+});
 
 // Manejar submits de forms en modals
 document.getElementById('ingresoForm').addEventListener('submit', function(e) {

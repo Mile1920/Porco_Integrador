@@ -7,6 +7,7 @@
     
     <!-- Tu CSS original (ajústalo según dónde lo tengas) -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/porco-theme.css') }}">
     
     <!-- Font Awesome para el ícono de montaña y futuros íconos -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
@@ -43,23 +44,23 @@
     <section class="stats">
         <div class="stat-card">   
             <img src="{{ asset('img/Minero.png') }}" class="feature-img" alt="Trabajadores">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">Trabajadores Activos</div>
+            <div class="stat-number">Personal</div>
+            <div class="stat-label">Perfiles y asistencia</div>
         </div>
         <div class="stat-card">
             <img src="{{ asset('img/SeguridadOperativa.png') }}" class="feature-img" alt="Eficiencia">
-            <div class="stat-number">98%</div>
-            <div class="stat-label">Eficiencia Operativa</div>
+            <div class="stat-number">Seguridad</div>
+            <div class="stat-label">Incidentes y alertas</div>
         </div>
         <div class="stat-card">
             <img src="{{ asset('img/Seguridad.png') }}" class="feature-img" alt="Seguridad">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">Cumplimiento de Seguridad</div>
+            <div class="stat-number">Sensores</div>
+            <div class="stat-label">Lecturas recibidas</div>
         </div>
         <div class="stat-card">
             <img src="{{ asset('img/Monitoreo.png') }}" class="feature-img" alt="Monitoreo">
-            <div class="stat-number">24/7</div>
-            <div class="stat-label">Monitoreo en Tiempo Real</div>
+            <div class="stat-number">Reportes</div>
+            <div class="stat-label">Historial y estadísticas</div>
         </div>
     </section>
 
@@ -74,28 +75,28 @@
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📦</div>
-                <h3>Control de Inventario</h3>
-                <p>Administración inteligente de herramientas, equipos de protección personal, materiales explosivos y suministros en tiempo real.</p>
+                <h3>Solicitudes de herramientas</h3>
+                <p>Registro y seguimiento de solicitudes de equipo realizadas por los trabajadores.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
-                <h3>Seguridad Avanzada</h3>
-                <p>Monitoreo continuo de condiciones peligrosas, gases tóxicos, alertas automáticas y protocolos de emergencia minera.</p>
+                <h3>Monitoreo de seguridad</h3>
+                <p>Lecturas de sensores, alertas registradas e incidentes para apoyar la respuesta del equipo.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📈</div>
-                <h3>Análisis de Producción</h3>
-                <p>Reportes detallados de tonelaje, métricas de rendimiento, análisis predictivo y optimización de procesos extractivos.</p>
+                <h3>Reportes y estadísticas</h3>
+                <p>Consulta los registros disponibles de trabajadores, ingresos, incidentes y sensores.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🚨</div>
-                <h3>Alertas Inteligentes</h3>
-                <p>Notificaciones instantáneas sobre incidentes de seguridad, mantenimiento de equipos y eventos críticos en la operación.</p>
+                <h3>Alertas de seguridad</h3>
+                <p>Consulta eventos y lecturas que activan las reglas de seguridad configuradas.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📱</div>
-                <h3>Acceso Móvil</h3>
-                <p>Gestión completa desde cualquier dispositivo móvil o tablet con aplicación responsive y sincronización en tiempo real.</p>
+                <h3>Diseño adaptable</h3>
+                <p>Acceso desde computadora, tableta y teléfono mediante una interfaz que se adapta al tamaño de pantalla.</p>
             </div>
         </div>
     </section>
@@ -106,23 +107,23 @@
        <div class="process-steps">
             <div class="step">
                 <div class="step-number">1</div>
-                <h4>Registro e Instalación</h4>
-                <p>Crea tu cuenta empresarial y configura tu perfil de operación minera en menos de 10 minutos con nuestro asistente inteligente.</p>
+                <h4>Acceso al sistema</h4>
+                <p>Inicia sesión con la cuenta que te asignó la administración del sistema.</p>
             </div>
             <div class="step">
                 <div class="step-number">2</div>
-                <h4>Configuración Personalizada</h4>
-                <p>Personaliza módulos según tus necesidades, define permisos de usuarios, roles y parámetros operativos específicos de tu mina.</p>
+                <h4>Áreas y trabajadores</h4>
+                <p>Consulta los perfiles y registros de asistencia según los permisos de tu cuenta.</p>
             </div>
             <div class="step">
                 <div class="step-number">3</div>
-                <h4>Integración de Datos</h4>
-                <p>Conecta tus sistemas existentes, importa datos históricos y comienza a digitalizar tus procesos mineros de forma gradual.</p>
+                <h4>Registro de sensores</h4>
+                <p>Configura dispositivos y revisa las lecturas recibidas por el sistema.</p>
             </div>
             <div class="step">
                 <div class="step-number">4</div>
-                <h4>Operación Continua</h4>
-                <p>Gestiona operaciones diarias, monitorea en tiempo real y toma decisiones basadas en datos con dashboards intuitivos.</p>
+                <h4>Alertas e informes</h4>
+                <p>Consulta alertas, incidentes e informes basados en los registros disponibles.</p>
             </div>
         </div>
     </section>
@@ -159,9 +160,8 @@
             <div class="footer-section">
                 <h3>Contacto</h3>
                 <ul class="footer-links">
-                    <li>📞 +591 1234 5678</li>
-                    <li>✉️ info@minaporco.com</li>
-                    <li>📍 Potosí, Bolivia</li>
+                    <li>Administración del sistema</li>
+                    <li>Centro Minero Porco Illapa</li>
                 </ul>
             </div>
             <div class="footer-section">

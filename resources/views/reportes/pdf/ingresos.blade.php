@@ -5,18 +5,18 @@
     <title>Reporte de Ingresos - {{ $stats['periodo']['inicio'] }} al {{ $stats['periodo']['fin'] }}</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .header h1 { margin: 0; color: #333; }
-        .header p { margin: 5px 0; color: #666; }
+        .header { text-align: center; border-bottom: 2px solid #651c38; padding-bottom: 10px; margin-bottom: 20px; }
+        .header h1 { margin: 0; color: #42172c; }
+        .header p { margin: 5px 0; color: #694b54; }
         .stats { display: table; width: 100%; margin-bottom: 20px; }
-        .stats div { display: table-cell; text-align: center; padding: 10px; background: #f5f5f5; margin: 0 5px; }
-        .stats strong { display: block; font-size: 18px; color: #333; }
-        .stats span { color: #666; }
+        .stats div { display: table-cell; text-align: center; padding: 10px; background: #fff8f2; margin: 0 5px; }
+        .stats strong { display: block; font-size: 18px; color: #42172c; }
+        .stats span { color: #694b54; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; font-weight: bold; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #666; }
+        th, td { border: 1px solid #e8d8cd; padding: 8px; text-align: left; }
+        th { background-color: #fff1e9; color: #42172c; font-weight: bold; }
+        tr:nth-child(even) { background-color: #fff8f2; }
+        .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #694b54; }
     </style>
 </head>
 <body>

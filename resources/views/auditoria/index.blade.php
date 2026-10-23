@@ -101,10 +101,14 @@
                 </div>
             </div>
             <div class="card-footer d-flex justify-content-between">
-                <a href="{{ route('auditoria.limpiar') }}" class="btn btn-danger btn-sm"
-                   onclick="return confirm('¿Eliminar logs anteriores a 3 meses?')">
-                    <i class="fas fa-trash"></i> Limpiar logs antiguos
-                </a>
+                @hasrole('administrador-principal')
+                    <form method="POST" action="{{ route('auditoria.limpiar') }}" onsubmit="return confirm('¿Eliminar logs anteriores a 3 meses?')">
+                        @csrf
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash"></i> Limpiar logs antiguos
+                        </button>
+                    </form>
+                @endhasrole
                 <a href="{{ route('dashboard') }}" class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-arrow-left"></i> Volver
                 </a>

@@ -58,21 +58,17 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
-## Sensor Endpoint
+## Puesta en marcha y sensores
 
-If you plan to send sensor data to the application, there is an endpoint at `POST /sensors/data`.
+Requisitos: PHP 8.2 o superior con extensiones `curl`, `fileinfo`, `mbstring`, `openssl`, `pdo_pgsql` o `pdo_sqlite`, `pgsql` o `sqlite3`, `sodium` y `zip`; Composer 2; Node.js y npm.
 
-- By default the endpoint is public. To secure it, set `SENSOR_SECRET` in your `.env` (see `.env.example`).
-- When `SENSOR_SECRET` is set, sensor requests must include header `X-SENSOR-KEY: <SENSOR_SECRET>`.
+1. Instala dependencias PHP con `composer install` y JavaScript con `npm install`.
+2. Copia `.env.example` a `.env`, genera `APP_KEY` con `php artisan key:generate` y configura la conexión de base de datos.
+3. Define una clave aleatoria larga en `SENSOR_SECRET`. La recepción de ambos endpoints queda deshabilitada si falta la clave.
+4. Ejecuta `php artisan migrate` y `npm run build`.
+5. Configura SSID, contraseña Wi-Fi, IP del servidor y la misma clave `SENSOR_SECRET` en el firmware ESP32 antes de cargarlo.
+6. Inicia el servidor con `php artisan serve` o el servidor web configurado en Laragon.
 
-Example curl (no secret):
+Telemetría autenticada: `POST /sensors/data` y `POST /api/sensor/esp32/recibir`, enviando la clave en el encabezado `X-SENSOR-KEY`. La ruta ESP32 valida lecturas MQ-7/MQ-135 de 0 a 4095, limita el tamaño del paquete y no cambia los umbrales de alarma existentes. Las rutas de administración requieren sesión, rol y CSRF.
 
-```bash
-curl -X POST http://127.0.0.1:8000/sensors/data -H "Content-Type: application/json" -d '{"device_id":"dev123","tipo":"pm","payload":{"pm2_5":85},"alert":true}'
-```
-
-Example with secret:
-
-```bash
-curl -X POST http://127.0.0.1:8000/sensors/data -H "Content-Type: application/json" -H "X-SENSOR-KEY: mi_clave" -d '{"device_id":"dev123","tipo":"pm","payload":{"pm2_5":85},"alert":true}'
-```
+La pantalla Firebase no genera lecturas de ejemplo; si Firebase no está configurado o no responde, indica que no hay datos remotos disponibles. Las lecturas recibidas se guardan en la base local y continúan visibles en el panel local de sensores.

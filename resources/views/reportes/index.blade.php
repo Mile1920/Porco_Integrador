@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-header d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #50c878, #2e8b57); color: white; border: none;">
+            <div class="card-header d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: white; border: none;">
                 <div>
                     <h3 class="card-title mb-2" style="font-size: 2rem; font-weight: 700;">
                         <img src="{{ asset('img/Monitoreo.png') }}" alt="Reportes" class="icon-img-small me-3" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
@@ -24,7 +24,7 @@
                 <!-- Estadísticas Rápidas Mejoradas -->
                 <div class="row mb-4">
                     <div class="col-md-3">
-                        <div class="card" style="background: linear-gradient(135deg, #50c878, #2e8b57); color: white; border: none;">
+                        <div class="card" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: white; border: none;">
                             <div class="card-body text-center py-4">
                                 <div style="font-size: 3rem; font-weight: 700; margin-bottom: 10px;">{{ $stats['total_trabajadores'] }}</div>
                                 <div style="font-size: 1.1rem; font-weight: 600;">Trabajadores Activos</div>
@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card" style="background: linear-gradient(135deg, #2196f3, #0d47a1); color: white; border: none;">
+                        <div class="card" style="background: linear-gradient(135deg, var(--porco-info), var(--porco-wine)); color: white; border: none;">
                             <div class="card-body text-center py-4">
                                 <div style="font-size: 3rem; font-weight: 700; margin-bottom: 10px;">{{ $stats['ingresos_hoy'] }}</div>
                                 <div style="font-size: 1.1rem; font-weight: 600;">Ingresos Hoy</div>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card" style="background: linear-gradient(135deg, #ff9800, #f57c00); color: white; border: none;">
+                        <div class="card" style="background: linear-gradient(135deg, var(--porco-warning), var(--porco-raspberry)); color: white; border: none;">
                             <div class="card-body text-center py-4">
                                 <div style="font-size: 3rem; font-weight: 700; margin-bottom: 10px;">{{ $stats['incidentes_pendientes'] }}</div>
                                 <div style="font-size: 1.1rem; font-weight: 600;">Incidentes Pendientes</div>
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card" style="background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; border: none;">
+                        <div class="card" style="background: linear-gradient(135deg, var(--porco-anomaly), #6a1b9a); color: white; border: none;">
                             <div class="card-body text-center py-4">
                                 <div style="font-size: 3rem; font-weight: 700; margin-bottom: 10px;">{{ $sensorStats['activos'] }}</div>
                                 <div style="font-size: 1.1rem; font-weight: 600;">Sensores Activos</div>
@@ -60,7 +60,7 @@
                 <!-- Reportes Disponibles -->
                 <div class="row">
                     <div class="col-md-12">
-                        <h4 class="mb-4" style="font-size: 1.8rem; font-weight: 700; color: #333; border-bottom: 3px solid #50c878; padding-bottom: 10px;">
+                        <h4 class="mb-4" style="font-size: 1.8rem; font-weight: 700; color: #333; border-bottom: 3px solid var(--porco-wine); padding-bottom: 10px;">
                             <img src="{{ asset('img/Logo.png') }}" alt="Reportes" class="icon-img-small me-3" style="width: 28px; height: 28px;">
                             Reportes Disponibles
                         </h4>
@@ -169,7 +169,7 @@
                 <!-- Información del Sistema Mejorada -->
                 <div class="row mt-5">
                     <div class="col-md-12">
-                        <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #50c878, #2e8b57); color: white;">
+                        <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: white;">
                             <div class="card-header border-0" style="background: transparent;">
                                 <h4 class="mb-0" style="font-size: 1.5rem; font-weight: 700;">
                                     <img src="{{ asset('img/Monitoreo.png') }}" alt="Info" class="icon-img-small me-3" style="width: 28px; height: 28px; filter: brightness(0) invert(1);">

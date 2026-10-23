@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Sensores Firebase - Datos Simulados')
+@section('title', 'Sensores Firebase')
 @section('content')
 
 <div class="row">
@@ -8,7 +8,7 @@
             <div class="card-header card-header-primary d-flex align-items-center justify-content-between">
                 <div>
                     <h3 class="card-title mb-0">
-                        <i class="fas fa-cloud"></i> Sensores Firebase - Datos Simulados
+                        <i class="fas fa-cloud"></i> Sensores Firebase
                     </h3>
                     <small class="text-muted">Monitoreo en tiempo real desde Firebase</small>
                 </div>

@@ -77,8 +77,8 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-striped" style="background-color: #2c2c2c; color: #ffffff; border: 1px solid #444;">
-                        <thead style="background-color: #1a1a1a; color: #ffffff; border-bottom: 2px solid #50c878;">
+                    <table class="table table-striped">
+                        <thead style="background-color: var(--porco-wine); color: #ffffff; border-bottom: 2px solid var(--porco-wine);">
                             <tr>
                                 <th style="border: none;">Trabajador</th>
                                 <th style="border: none;">Tipo</th>
@@ -89,7 +89,7 @@
                         </thead>
                         <tbody style="color: #ffffff;">
                             @forelse(\App\Models\Ingreso::with('trabajador', 'area')->latest()->limit(15)->get() as $ingreso)
-                                <tr style="background-color: {{ $loop->even ? '#333333' : '#2a2a2a' }}; border-bottom: 1px solid #444;">
+                                <tr>
                                     <td style="border: none; color: #ffffff;">{{ $ingreso->trabajador->nombre_completo ?? 'N/A' }}</td>
                                     <td style="border: none;">
                                         <span class="badge {{ $ingreso->tipo === 'ingreso' ? 'badge-success' : 'badge-warning' }}" style="color: #ffffff;">
@@ -101,7 +101,7 @@
                                     <td style="border: none; color: #ffffff;">{{ \Carbon\Carbon::parse($ingreso->registrado_en)->format('d/m/Y H:i') }}</td>
                                 </tr>
                             @empty
-                                <tr style="background-color: #333333;">
+                                <tr>
                                     <td colspan="5" class="text-center" style="color: #ffffff; border: none;">No hay registros recientes</td>
                                 </tr>
                             @endforelse

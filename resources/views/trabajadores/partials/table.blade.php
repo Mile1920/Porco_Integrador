@@ -46,9 +46,9 @@
                         <form action="{{ route('trabajadores.destroy', $t) }}" method="POST" class="d-inline">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="btn btn-{{ $t->activo ? 'danger' : 'success' }} btn-sm" 
+                            <button type="submit" class="btn btn-{{ $t->activo ? 'danger' : 'success' }} btn-sm confirm-form-action"
                                 data-toggle="tooltip" data-placement="top" title="{{ $t->activo ? 'Desactivar' : 'Activar' }}"
-                                onclick="event.preventDefault(); systemConfirm('{{ $t->activo ? '¿Desactivar a ' . $t->nombre_completo . '?' : '¿Activar a ' . $t->nombre_completo . '?' }}').then(confirmed => { if(confirmed) this.closest('form').submit(); }); return false;">
+                                data-confirm-message="{{ $t->activo ? '¿Desactivar a ' . $t->nombre_completo . '?' : '¿Activar a ' . $t->nombre_completo . '?' }}">
                                 <img src="{{ asset('img/SeguridadOperativa.png') }}" alt="estado" class="icon-img">
                             </button>
                         </form>
@@ -56,21 +56,21 @@
 
                     <button type="button" class="btn btn-info btn-sm" 
                         data-toggle="tooltip" data-placement="top" title="Registrar ingreso de {{ $t->nombre_completo }}"
-                        onclick="openIngresoModal({{ $t->id }}, '{{ addslashes($t->nombre_completo) }}')">
+                        data-worker-action="ingreso" data-worker-id="{{ $t->id }}" data-worker-name="{{ $t->nombre_completo }}">
                         <img src="{{ asset('img/Monitoreo.png') }}" alt="Ingreso" class="icon-img">
                     </button>
 
                     <button type="button" class="btn btn-secondary btn-sm" 
                         data-toggle="tooltip" data-placement="top" title="Registrar salida de {{ $t->nombre_completo }}"
-                        onclick="openSalidaModal({{ $t->id }}, '{{ addslashes($t->nombre_completo) }}')">
+                        data-worker-action="salida" data-worker-id="{{ $t->id }}" data-worker-name="{{ $t->nombre_completo }}">
                         <img src="{{ asset('img/Monitoreo.png') }}" alt="Salida" class="icon-img">
                     </button>
 
                     <form action="{{ route('trabajadores.sos', $t) }}" method="POST" class="d-inline">
                         @csrf
-                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                        <button type="submit" class="btn btn-outline-danger btn-sm confirm-form-action"
                             data-toggle="tooltip" data-placement="top" title="SOS"
-                            onclick="event.preventDefault(); systemConfirm('¿Enviar SOS por {{ $t->nombre_completo }}?').then(confirmed => { if(confirmed) this.closest('form').submit(); }); return false;">
+                            data-confirm-message="¿Enviar SOS por {{ $t->nombre_completo }}?">
                             SOS
                         </button>
                     </form>

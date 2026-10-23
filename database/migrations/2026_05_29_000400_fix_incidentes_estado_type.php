@@ -7,7 +7,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        DB::statement("ALTER TABLE incidentes ALTER COLUMN estado TYPE VARCHAR(20)");
+        // SQLite (used by the automated test suite) already creates this field
+        // with a text-compatible type and does not support PostgreSQL's ALTER syntax.
+        if (DB::getDriverName() === 'pgsql') {
+            DB::statement("ALTER TABLE incidentes ALTER COLUMN estado TYPE VARCHAR(20)");
+        }
     }
 
     public function down(): void

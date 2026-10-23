@@ -18,6 +18,11 @@ class FirebaseService
      */
     public function getSensorData($path = 'sensores')
     {
+        if (!$this->baseUrl) {
+            \Log::warning('Firebase no está configurado; no se muestran datos simulados.');
+            return [];
+        }
+
         try {
             $url = rtrim($this->baseUrl, '/') . '/' . ltrim($path, '/') . '.json';
 
@@ -33,93 +38,16 @@ class FirebaseService
                     return $data;
                 }
 
-                // Si Firebase está vacío o no tiene estructura, inicializar con datos mock
-                \Log::info('Firebase conectado pero sin datos, inicializando con datos de ejemplo');
-                $this->initializeFirebaseWithMockData();
-                return $this->getMockData();
+                return [];
             }
 
-            // Si la respuesta no es exitosa, usar datos mock
-            \Log::warning('Firebase respondió con error, usando datos de ejemplo. Status: ' . $response->status());
-            return $this->getMockData();
+            \Log::warning('Firebase respondió con error. Status: ' . $response->status());
+            return [];
 
         } catch (\Exception $e) {
-            \Log::error('Error conectando con Firebase, usando datos de ejemplo: ' . $e->getMessage());
-            return $this->getMockData();
+            \Log::error('Error conectando con Firebase: ' . $e->getMessage());
+            return [];
         }
-    }
-
-    /**
-     * Datos de dispositivos IoT conectados
-     */
-    private function getMockData()
-    {
-        return [
-            'sensor_movimiento_tierra_1' => [
-                'activo' => true,
-                'tipo' => 'movimiento_tierra',
-                'area' => 'Túnel Principal',
-                'subnivel' => 'Nivel -100m',
-                'movimiento' => 2.3, // mm de movimiento
-                'aceleracion' => 0.15, // g
-                'ultima_lectura' => now()->toISOString(),
-                'alertas' => [
-                    ['mensaje' => 'Movimiento de tierra detectado', 'nivel' => 'medio', 'timestamp' => now()->subHours(1)->toISOString()],
-                ],
-                'lecturas' => [
-                    ['movimiento' => 1.8, 'aceleracion' => 0.12, 'timestamp' => now()->subHours(2)->toISOString()],
-                    ['movimiento' => 2.3, 'aceleracion' => 0.15, 'timestamp' => now()->subHours(1)->toISOString()],
-                ]
-            ],
-            'sensor_gases_toxicos_1' => [
-                'activo' => true,
-                'tipo' => 'gases_toxicos',
-                'area' => 'Zona de Extracción',
-                'subnivel' => 'Nivel -200m',
-                'co' => 75.2, // ppm - CRÍTICO (>50)
-                'co2' => 450.5, // ppm
-                'metano' => 25.1, // ppm
-                'oxigeno' => 19.8, // %
-                'ultima_lectura' => now()->toISOString(),
-                'alertas' => [
-                    ['mensaje' => 'Nivel de CO elevado', 'nivel' => 'alto', 'timestamp' => now()->subMinutes(30)->toISOString()],
-                ],
-                'lecturas' => [
-                    ['co' => 12.1, 'co2' => 420.3, 'metano' => 22.5, 'oxigeno' => 20.1, 'timestamp' => now()->subHours(1)->toISOString()],
-                    ['co' => 75.2, 'co2' => 450.5, 'metano' => 25.1, 'oxigeno' => 19.8, 'timestamp' => now()->toISOString()],
-                ]
-            ],
-            'sensor_signos_vitales_1' => [
-                'activo' => true,
-                'tipo' => 'signos_vitales',
-                'area' => 'Zona de Trabajo',
-                'subnivel' => 'Nivel -50m',
-                'frecuencia_cardiaca' => 78, // bpm
-                'temperatura_corporal' => 36.8, // °C
-                'saturacion_oxigeno' => 97, // %
-                'presion_arterial' => '120/80', // mmHg
-                'ultima_lectura' => now()->toISOString(),
-                'alertas' => [],
-                'lecturas' => [
-                    ['frecuencia_cardiaca' => 75, 'temperatura_corporal' => 36.6, 'saturacion_oxigeno' => 98, 'presion_arterial' => '118/78', 'timestamp' => now()->subHours(1)->toISOString()],
-                    ['frecuencia_cardiaca' => 78, 'temperatura_corporal' => 36.8, 'saturacion_oxigeno' => 97, 'presion_arterial' => '120/80', 'timestamp' => now()->toISOString()],
-                ]
-            ],
-            'sensor_movimiento_tierra_2' => [
-                'activo' => true,
-                'tipo' => 'movimiento_tierra',
-                'area' => 'Túnel Secundario',
-                'subnivel' => 'Nivel -150m',
-                'movimiento' => 1.1,
-                'aceleracion' => 0.08,
-                'ultima_lectura' => now()->toISOString(),
-                'alertas' => [],
-                'lecturas' => [
-                    ['movimiento' => 0.9, 'aceleracion' => 0.06, 'timestamp' => now()->subHours(1)->toISOString()],
-                    ['movimiento' => 1.1, 'aceleracion' => 0.08, 'timestamp' => now()->toISOString()],
-                ]
-            ]
-        ];
     }
 
     /**
@@ -178,52 +106,6 @@ class FirebaseService
             \Log::error('Error enviando datos a Firebase para sensor ' . $sensorId . ': ' . $e->getMessage());
             return false;
         }
-    }
-
-    /**
-     * Inicializar Firebase con datos de ejemplo si está vacío
-     */
-    private function initializeFirebaseWithMockData()
-    {
-        try {
-            $sensorData = $this->getMockData();
-            $successCount = 0;
-
-            foreach ($sensorData as $sensorId => $data) {
-                // Agregar timestamp actual
-                $data['ultima_actualizacion'] = now()->toISOString();
-
-                if ($this->sendSensorData($sensorId, $data)) {
-                    $successCount++;
-                }
-            }
-
-            if ($successCount > 0) {
-                \Log::info("Firebase inicializado con {$successCount} sensores de ejemplo");
-            }
-        } catch (\Exception $e) {
-            \Log::error('Error inicializando Firebase: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     * Generar datos simulados de sensores y enviar a Firebase
-     */
-    public function generateAndSendSensorData()
-    {
-        $sensorData = $this->getMockData();
-        $successCount = 0;
-
-        foreach ($sensorData as $sensorId => $data) {
-            // Agregar timestamp actual
-            $data['ultima_actualizacion'] = now()->toISOString();
-
-            if ($this->sendSensorData($sensorId, $data)) {
-                $successCount++;
-            }
-        }
-
-        return $successCount;
     }
 
     /**

@@ -51,6 +51,8 @@ php artisan serve
 | tecnico@minaporco.com | 12345678 | Técnico | Limitado |
 | trabajador@minaporco.com | 12345678 | Trabajador | Básico |
 
+Estas cuentas se crean con `php artisan migrate --seed`; son solo para desarrollo. Cambia las contraseñas antes de poner el sistema en producción.
+
 ---
 
 ## 📧 Configurar Correos

@@ -1,9 +1,6 @@
 /* ============================================
    MINA PORCO - SISTEMA DE GESTIÓN INTEGRAL
-   Paleta de Colores:
-   - Verde Esmeralda: #50C878, #2E8B57
-   - Azul Petróleo: #004E64, #00A5CF
-   - Complementarios: #F4A261 (naranja suave), #E76F51 (coral)
+   La paleta activa se centraliza en public/css/porco-theme.css.
    ============================================ */
 
 * {
@@ -13,20 +10,20 @@
 }
 
 :root {
-    --primary-green: #50C878;
-    --dark-green: #2E8B57;
-    --primary-blue: #004E64;
-    --light-blue: #00A5CF;
-    --accent-orange: #F4A261;
-    --accent-coral: #E76F51;
-    --bg-dark: #0a1628;
-    --bg-darker: #198A75;
+    --primary-green: var(--porco-raspberry);
+    --dark-green: var(--porco-wine);
+    --primary-blue: var(--porco-wine);
+    --light-blue: var(--porco-coral);
+    --accent-orange: var(--porco-gold);
+    --accent-coral: var(--porco-coral);
+    --bg-dark: var(--porco-ivory);
+    --bg-darker: var(--porco-ivory);
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 50%, var(--primary-blue) 100%);
-    color: #fff;
+    background: var(--porco-ivory);
+    color: var(--porco-ink);
     overflow-x: hidden;
     line-height: 1.6;
 }
@@ -791,8 +788,8 @@ footer {
    COLOR OVERRIDES - NO RED
    ============================================ */
 :root {
-    --color-danger-override: #E76F51; /* Coral */
-    --color-warning-override: #F4A261; /* Orange */
+    --color-danger-override: var(--porco-critical);
+    --color-warning-override: var(--porco-warning);
 }
 
 /* Text */
@@ -1124,7 +1121,7 @@ a.nav-link.text-danger:hover {
 }
 
 .light-edition .sidebar {
-    background: linear-gradient(180deg, #004E64, #003548) !important;
+    background: var(--porco-wine) !important;
 }
 
 .light-edition .sidebar .nav p {
@@ -1150,7 +1147,7 @@ a.nav-link.text-danger:hover {
 }
 
 .light-edition .card-header-primary {
-    background: linear-gradient(60deg, #004E64, #00A5CF) !important;
+    background: linear-gradient(60deg, var(--porco-wine), var(--porco-raspberry)) !important;
 }
 
 .light-edition .card-header-primary .card-title,
@@ -1175,8 +1172,8 @@ a.nav-link.text-danger:hover {
 }
 
 .light-edition .form-control:focus {
-    border-color: #00A5CF !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 165, 207, 0.25);
+    border-color: var(--porco-raspberry) !important;
+    box-shadow: 0 0 0 0.2rem rgba(197, 45, 89, 0.25);
 }
 
 .light-edition label,
@@ -1226,14 +1223,14 @@ a.nav-link.text-danger:hover {
 }
 
 .light-edition .pagination-wrap .page-link {
-    color: #004E64;
+    color: var(--porco-raspberry);
     background-color: #fff;
     border-color: #dee2e6;
 }
 
 .light-edition .pagination-wrap .page-item.active .page-link {
-    background-color: #004E64;
-    border-color: #004E64;
+    background-color: var(--porco-raspberry);
+    border-color: var(--porco-raspberry);
     color: #fff;
 }
 
@@ -1242,16 +1239,18 @@ a.nav-link.text-danger:hover {
 }
 
 .light-edition .badge-success {
-    background-color: #28a745;
-    color: #fff;
+    background-color: var(--porco-normal-bg);
+    color: var(--porco-normal);
 }
 
 .light-edition .badge-warning {
-    color: #1a1a2e;
+    background-color: var(--porco-warning-bg);
+    color: var(--porco-warning);
 }
 
 .light-edition .badge-danger {
-    color: #fff;
+    background-color: var(--porco-critical-bg);
+    color: var(--porco-critical);
 }
 
 .light-edition .dropdown-menu {
@@ -1317,7 +1316,7 @@ a.nav-link.text-danger:hover {
     padding: 0.35em 0.65em;
 }
 .dark-edition .badge-info {
-    background-color: #17a2b8;
+    background-color: var(--porco-info-bg);
     color: #fff;
 }
 .dark-edition .badge-secondary {
@@ -1325,8 +1324,8 @@ a.nav-link.text-danger:hover {
     color: #fff;
 }
 .dark-edition .badge-success {
-    background-color: #28a745;
-    color: #fff;
+    background-color: var(--porco-normal-bg);
+    color: var(--porco-normal);
 }
 .dark-edition .badge-danger {
     background-color: var(--color-danger-override);

@@ -244,7 +244,7 @@ function actualizarUIEsp32(data) {
     const statusDiv = document.getElementById('esp32Status');
 
     if (data.connected) {
-        statusEl.innerHTML = '<span style="color:#4CAF50;font-size:1.2rem"><i class="fas fa-check-circle"></i> Conectado</span>';
+        statusEl.innerHTML = '<span style="color:var(--porco-normal);font-size:1.2rem"><i class="fas fa-check-circle"></i> Conectado</span>';
         statusDiv.style.background = '#e8f5e9';
         if (data.ultima_conexion) {
             const d = new Date(data.ultima_conexion);
@@ -253,7 +253,7 @@ function actualizarUIEsp32(data) {
             latencyEl.textContent = '';
         }
     } else {
-        statusEl.innerHTML = '<span style="color:#f44336;font-size:1.2rem"><i class="fas fa-times-circle"></i> Desconectado</span>';
+        statusEl.innerHTML = '<span style="color:var(--porco-critical);font-size:1.2rem"><i class="fas fa-times-circle"></i> Desconectado</span>';
         statusDiv.style.background = '#ffebee';
         if (data.minutos_sin_datos !== null && data.minutos_sin_datos !== undefined) {
             latencyEl.textContent = 'Sin datos desde hace ' + data.minutos_sin_datos + ' min';

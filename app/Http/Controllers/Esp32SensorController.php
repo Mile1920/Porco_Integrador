@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SensorData;
+use App\Models\Alerta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -14,6 +15,7 @@ class Esp32SensorController extends Controller
     {
         $ip = config('esp32.ip', env('ESP32_IP', '192.168.1.205'));
         $mac = config('esp32.mac', env('ESP32_MAC', '00:4B:12:35:3E:00'));
+        $sensorKey = config('esp32.sensor_secret', '');
 
         $macClean = str_replace(':', '', $mac);
         $lecturas = SensorData::where(function ($q) use ($mac, $macClean) {
@@ -28,24 +30,33 @@ class Esp32SensorController extends Controller
             ->orderBy('created_at', 'desc')
             ->limit(50)
             ->get();
+        $ultimaConexion = $lecturas->first()?->created_at;
 
-        return view('sensors.esp32', compact('ip', 'mac', 'lecturas', 'ultimaConexion'));
+        return view('sensors.esp32', compact('ip', 'mac', 'lecturas', 'ultimaConexion', 'sensorKey'));
     }
 
     public function recibir(Request $request)
     {
-        $payload = $request->all();
-
-        $rules = [
-            'device_id' => 'required|string|max:100',
-            'tipo' => 'required|string|max:50',
-        ];
-
-        if (isset($payload['mediciones']) && is_array($payload['mediciones'])) {
-            $rules['mediciones'] = 'array';
+        $secret = (string) config('esp32.sensor_secret', '');
+        $key = (string) $request->header('X-SENSOR-KEY', '');
+        if ($secret === '') {
+            return response()->json(['success' => false, 'message' => 'Recepción de sensores no configurada'], 503);
+        }
+        if ($key === '' || !hash_equals($secret, $key)) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+        if (strlen($request->getContent()) > 4096) {
+            return response()->json(['success' => false, 'message' => 'El paquete supera el tamaño permitido'], 413);
         }
 
-        $validator = validator($payload, $rules);
+        $validator = validator($request->all(), [
+            'device_id' => 'required|string|max:100|regex:/\A[a-zA-Z0-9._:-]+\z/',
+            'tipo' => 'required|string|in:gases_toxicos|max:50',
+            'mediciones' => 'required|array',
+            'mediciones.mq7_co' => 'required|integer|between:0,4095',
+            'mediciones.mq135_aire' => 'required|integer|between:0,4095',
+            'mediciones.alerta' => 'required|boolean',
+        ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -55,6 +66,7 @@ class Esp32SensorController extends Controller
             ], 422);
         }
 
+        $payload = $validator->validated();
         try {
             SensorData::create([
                 'device_id' => $payload['device_id'],
@@ -67,22 +79,33 @@ class Esp32SensorController extends Controller
 
             // Verificar si hay alerta de gas (MQ-7 > 2200 o MQ-135 > 2850)
             $mediciones = $payload['mediciones'] ?? $payload;
-            $mq7 = $mediciones['mq7_co'] ?? 0;
-            $mq135 = $mediciones['mq135_aire'] ?? 0;
-            $alertaActiva = $mediciones['alerta'] ?? false;
+            $mq7 = (int) $mediciones['mq7_co'];
+            $mq135 = (int) $mediciones['mq135_aire'];
+            $alertaActiva = (bool) $mediciones['alerta'];
 
             if ($alertaActiva || $mq7 > 2200 || $mq135 > 2850) {
                 $nivel = ($mq7 > 2600 || $mq135 > 3200) ? 'critico' : 'alto';
+                $desc = "{$nivel}: MQ-7={$mq7}, MQ-135={$mq135} — Niveles peligrosos de gas en Mina Subterránea";
+
                 Auditoria::create([
-                    'usuario_id' => null,
-                    'accion' => 'alerta_gas',
-                    'descripcion' => "{$nivel}: MQ-7={$mq7}, MQ-135={$mq135} — Niveles peligrosos de gas en Mina Subterránea",
-                    'tabla_afectada' => 'sensor_data',
-                    'registro_id' => null,
-                    'valores_antiguos' => null,
-                    'valores_nuevos' => json_encode($mediciones),
-                    'created_at' => now(),
+                    'Id_Usuario' => null,
+                    'Accion' => 'alerta_gas',
+                    'Tabla_Afectada' => 'sensor_data',
+                    'Id_Registro' => null,
+                    'Detalle' => $desc . ' | ' . json_encode($mediciones, JSON_UNESCAPED_UNICODE),
+                    'IP_Origen' => $request->ip(),
+                    'Fecha' => now(),
                 ]);
+
+                Alerta::create([
+                    'tipo' => 'gases_toxicos',
+                    'nivel' => $nivel,
+                    'mensaje' => "MQ-7: {$mq7} ppm | MQ-135: {$mq135} ppm — " . ($nivel === 'critico' ? '¡Peligro inminente!' : 'Niveles elevados de gas'),
+                    'origen' => $payload['device_id'],
+                    'area' => 'Mina Subterránea',
+                    'fecha_alerta' => now(),
+                ]);
+
                 Log::warning("[ESP32] ALERTA DE GAS - MQ-7: {$mq7}, MQ-135: {$mq135}");
             }
 
@@ -221,12 +244,15 @@ class Esp32SensorController extends Controller
     public function updateConfig(Request $request)
     {
         $data = $request->validate([
-            'ip' => 'required|string',
-            'mac' => 'required|string|max:30',
+            'ip' => 'required|ip',
+            'mac' => ['required', 'regex:/\A(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}\z/'],
         ]);
 
         $envPath = base_path('.env');
-        $envContent = file_get_contents($envPath);
+        $envContent = is_file($envPath) ? file_get_contents($envPath) : false;
+        if ($envContent === false) {
+            return response()->json(['success' => false, 'message' => 'No se pudo leer la configuración'], 500);
+        }
 
         $envContent = preg_replace('/^ESP32_IP=.*/m', 'ESP32_IP=' . $data['ip'], $envContent);
         if (!preg_match('/^ESP32_IP=/m', $envContent)) {
@@ -238,7 +264,9 @@ class Esp32SensorController extends Controller
             $envContent .= "\nESP32_MAC={$data['mac']}";
         }
 
-        file_put_contents($envPath, $envContent);
+        if (file_put_contents($envPath, $envContent, LOCK_EX) === false) {
+            return response()->json(['success' => false, 'message' => 'No se pudo guardar la configuración'], 500);
+        }
 
         Log::info("[ESP32] Configuración actualizada: IP={$data['ip']}, MAC={$data['mac']}");
 

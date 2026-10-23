@@ -8,11 +8,12 @@
 #include <HTTPClient.h>
 
 // ============ CONFIGURACIÓN ============
-const char* WIFI_SSID     = "AXS_2.4G_7FZKk3";
-const char* WIFI_PASSWORD = "se977KxA";
-const char* SERVIDOR = "http://192.168.1.205";
+const char* WIFI_SSID     = "CONFIGURAR_WIFI_SSID";
+const char* WIFI_PASSWORD = "CONFIGURAR_WIFI_PASSWORD";
+const char* SERVIDOR = "http://CONFIGURAR_IP_DEL_SERVIDOR";
 const char* ENDPOINT      = "/api/sensor/esp32/recibir";
 const char* DEVICE_ID     = "esp32_gases_01";
+const char* SENSOR_KEY    = "CONFIGURAR_SENSOR_SECRET";
 // =======================================
 
 // Pines
@@ -124,6 +125,7 @@ void enviarDatos(int mq7, int mq135, bool alerta) {
 
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
+    http.addHeader("X-SENSOR-KEY", SENSOR_KEY);
 
     String payload = "{";
     payload += "\"device_id\":\"" + String(DEVICE_ID) + "\",";

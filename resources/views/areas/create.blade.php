@@ -11,7 +11,7 @@
     .form-group .form-control:focus {
         background-color: #fff !important;
         color: #333 !important;
-        border-color: #50c878 !important;
+        border-color: var(--porco-wine) !important;
         box-shadow: 0 0 10px rgba(80, 200, 120, 0.3) !important;
     }
     .form-group .form-control::placeholder {

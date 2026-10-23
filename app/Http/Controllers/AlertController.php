@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ingreso;
 use App\Models\Trabajador;
+use App\Models\Alerta;
 use Illuminate\Http\Request;
 use App\Services\FirebaseService;
 use Illuminate\Support\Facades\DB;
@@ -100,7 +101,20 @@ class AlertController extends Controller
             }
         }
 
-        // 4. Ordenar: más recientes primero
+        // 4. Alertas persistentes desde la tabla alertas
+        $alertasDb = Alerta::orderBy('fecha_alerta', 'desc')->limit(50)->get();
+        foreach ($alertasDb as $a) {
+            $alerts[] = $this->makeAlert(
+                $a->origen,
+                $a->tipo,
+                $a->area ?? 'Sin área',
+                $a->mensaje,
+                $a->nivel,
+                $a->fecha_alerta->toISOString()
+            );
+        }
+
+        // 5. Ordenar: más recientes primero
         usort($alerts, function ($a, $b) {
             return strtotime($b['timestamp']) - strtotime($a['timestamp']);
         });

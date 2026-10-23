@@ -7,6 +7,7 @@
     <title>Ingresar | Mina Porco</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/porco-theme.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -91,7 +92,7 @@
             border-color: var(--primary-green);
             background: rgba(255, 255, 255, 0.2);
             box-shadow: 0 0 25px rgba(80, 200, 120, 0.6);
-            color: white !important;
+            color: var(--porco-ink) !important;
         }
 
         /* Asegurar que los campos sean siempre visibles */

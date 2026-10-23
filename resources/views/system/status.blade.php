@@ -21,7 +21,7 @@
 
                     <!-- Base de Datos -->
                     <div class="col-md-4">
-                        <div class="card border-{{ $databaseStatus['status'] === 'success' ? 'success' : 'warning' }}" style="background-color: {{ $databaseStatus['status'] === 'success' ? '#28a745' : '#ffc107' }};">
+                        <div class="card border-{{ $databaseStatus['status'] === 'success' ? 'success' : 'warning' }}" style="background-color: {{ $databaseStatus['status'] === 'success' ? 'var(--porco-normal)' : 'var(--porco-warning)' }};">
                             <div class="card-body text-center" style="color: #fff;">
                                 <i class="fas fa-database fa-2x mb-2" style="color: #fff;"></i>
                                 <h5 class="mb-2" style="font-size: 1.2rem; font-weight: 700; color: #ffffff;">🗄️ Base de Datos</h5>
@@ -37,7 +37,7 @@
 
                     <!-- Correo Electrónico -->
                     <div class="col-md-4">
-                        <div class="card border-{{ $mailStatus['status'] === 'success' ? 'success' : 'warning' }}" style="background-color: {{ $mailStatus['status'] === 'success' ? '#28a745' : '#ffc107' }};">
+                        <div class="card border-{{ $mailStatus['status'] === 'success' ? 'success' : 'warning' }}" style="background-color: {{ $mailStatus['status'] === 'success' ? 'var(--porco-normal)' : 'var(--porco-warning)' }};">
                             <div class="card-body text-center" style="color: #fff;">
                                 <i class="fas fa-envelope fa-2x mb-2" style="color: #fff;"></i>
                                 <h5 class="mb-2" style="font-size: 1.2rem; font-weight: 700; color: #ffffff;">📧 Correo Electrónico</h5>
@@ -53,7 +53,7 @@
 
                     <!-- Storage -->
                     <div class="col-md-4">
-                        <div class="card border-{{ $storageStatus['status'] === 'success' ? 'success' : 'warning' }}" style="background-color: {{ $storageStatus['status'] === 'success' ? '#28a745' : '#ffc107' }};">
+                        <div class="card border-{{ $storageStatus['status'] === 'success' ? 'success' : 'warning' }}" style="background-color: {{ $storageStatus['status'] === 'success' ? 'var(--porco-normal)' : 'var(--porco-warning)' }};">
                             <div class="card-body text-center" style="color: #fff;">
                                 <i class="fas fa-hdd fa-2x mb-2" style="color: #fff;"></i>
                                 <h5 class="mb-2" style="font-size: 1.2rem; font-weight: 700; color: #ffffff;">💾 Almacenamiento</h5>

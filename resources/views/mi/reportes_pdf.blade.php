@@ -5,12 +5,12 @@
     <title>Mis Reportes</title>
     <style>
         body{font-family: DejaVu Sans, Arial, sans-serif; font-size:12px}
-        .header{display:flex;align-items:center;border-bottom:1px solid #333;padding-bottom:10px;margin-bottom:10px}
+        .header{display:flex;align-items:center;border-bottom:2px solid #651c38;padding-bottom:10px;margin-bottom:10px}
         .logo{width:80px;margin-right:10px}
         .company{font-weight:700}
         table{width:100%;border-collapse:collapse;margin-top:8px}
-        th,td{border:1px solid #ddd;padding:6px}
-        th{background:#f4f4f4}
+        th,td{border:1px solid #e8d8cd;padding:6px}
+        th{background:#fff1e9;color:#42172c}
     </style>
 </head>
 <body>

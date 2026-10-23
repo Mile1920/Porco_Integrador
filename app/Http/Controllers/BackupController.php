@@ -76,7 +76,7 @@ class BackupController extends Controller
             Log::error("Error en backup: " . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Error interno al crear backup: ' . $e->getMessage()
+                'message' => 'Error interno al crear el backup. Revisa el registro del sistema.'
             ], 500);
         }
     }
@@ -108,27 +108,24 @@ class BackupController extends Controller
 
     public function download($filename)
     {
-        $filepath = storage_path("app/backups/{$filename}");
-
-        if (!file_exists($filepath)) {
+        $filepath = $this->validatedBackupPath((string) $filename);
+        if (!$filepath) {
             return response()->json([
                 'success' => false,
                 'message' => 'Archivo de backup no encontrado'
             ], 404);
         }
 
-        return response()->download($filepath, $filename, [
+        return response()->download($filepath, basename($filepath), [
             'Content-Type' => 'application/sql',
         ]);
     }
 
     public function delete($filename)
     {
-        $filepath = storage_path("app/backups/{$filename}");
-
-        if (file_exists($filepath)) {
-            unlink($filepath);
-            Log::info("Backup eliminado: {$filename}");
+        $filepath = $this->validatedBackupPath((string) $filename);
+        if ($filepath && unlink($filepath)) {
+            Log::info('Backup eliminado: ' . basename($filepath));
             return response()->json([
                 'success' => true,
                 'message' => 'Backup eliminado correctamente'
@@ -139,6 +136,21 @@ class BackupController extends Controller
             'success' => false,
             'message' => 'Archivo de backup no encontrado'
         ], 404);
+    }
+
+    private function validatedBackupPath(string $filename): ?string
+    {
+        if (!preg_match('/\Abackup_[A-Za-z0-9_.-]+_\d{8}_\d{6}\.sql\z/D', $filename)) {
+            return null;
+        }
+
+        $directory = realpath(storage_path('app/backups'));
+        $path = $directory ? realpath($directory . DIRECTORY_SEPARATOR . $filename) : false;
+        if (!$path || dirname($path) !== $directory || !is_file($path)) {
+            return null;
+        }
+
+        return $path;
     }
 
     private function cleanOldBackups($backupDir)

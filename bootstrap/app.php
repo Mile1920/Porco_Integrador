@@ -14,7 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(\App\Http\Middleware\AutoLogout::class);
         $middleware->validateCsrfTokens(except: [
             'api/sensor/esp32',
-            'api/sensor/esp32/*',
+            'api/sensor/esp32/recibir',
             'sensors/data',
         ]);
     })

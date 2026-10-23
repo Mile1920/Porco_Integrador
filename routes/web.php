@@ -176,7 +176,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // -------------------------------
     // ACCIONES DEL TRABAJADOR AUTENTICADO (registrar su propio ingreso/salida/reportes)
     // -------------------------------
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth', 'role:trabajador'])->group(function () {
         // Mis acciones del trabajador (panel personal)
         Route::get('/mi', [TrabajadorController::class, 'miDashboard'])->name('mi.index')->middleware('role:trabajador');
         Route::get('/mi/reportes', [TrabajadorController::class, 'miReports'])->name('mi.reportes')->middleware('role:trabajador');
@@ -222,21 +222,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Endpoint público para recibir datos desde sensores (si se configuran con SECRET)
-Route::post('/sensors/data', [SensorController::class, 'receive'])->name('sensors.data');
+Route::post('/sensors/data', [SensorController::class, 'receive'])->middleware('throttle:120,1')->name('sensors.data');
 
 // Endpoint ESP32 (público, para que el ESP32 envie lecturas)
-Route::post('/api/sensor/esp32', [App\Http\Controllers\Esp32SensorController::class, 'recibir'])->name('api.sensor.esp32');
-Route::post('/api/sensor/esp32/recibir', [App\Http\Controllers\Esp32SensorController::class, 'recibir']); // alias
+Route::post('/api/sensor/esp32', [App\Http\Controllers\Esp32SensorController::class, 'recibir'])->middleware('throttle:120,1')->name('api.sensor.esp32');
+Route::post('/api/sensor/esp32/recibir', [App\Http\Controllers\Esp32SensorController::class, 'recibir'])->middleware('throttle:120,1'); // alias
 Route::get('/api/sensor/esp32/health', [App\Http\Controllers\Esp32SensorController::class, 'health'])->name('api.sensor.esp32.health');
-Route::post('/api/sensor/esp32/connect', [App\Http\Controllers\Esp32SensorController::class, 'connect'])->name('api.sensor.esp32.connect');
-Route::post('/api/sensor/esp32/disconnect', [App\Http\Controllers\Esp32SensorController::class, 'disconnect'])->name('api.sensor.esp32.disconnect');
 Route::get('/api/sensor/esp32/status', [App\Http\Controllers\Esp32SensorController::class, 'status'])->name('api.sensor.esp32.status');
 
 // ESP32 management page (authenticated, role: tecnico or admin)
 Route::middleware(['auth', 'role:tecnico|administrador-area|administrador-principal'])->group(function () {
     Route::get('/sensors/esp32', [App\Http\Controllers\Esp32SensorController::class, 'index'])->name('sensors.esp32');
+    Route::post('/api/sensor/esp32/connect', [App\Http\Controllers\Esp32SensorController::class, 'connect'])->name('api.sensor.esp32.connect');
+    Route::post('/api/sensor/esp32/disconnect', [App\Http\Controllers\Esp32SensorController::class, 'disconnect'])->name('api.sensor.esp32.disconnect');
     Route::post('/api/sensor/esp32/config', [App\Http\Controllers\Esp32SensorController::class, 'updateConfig'])->name('api.sensor.esp32.config');
     Route::get('/api/sensor/esp32/config', [App\Http\Controllers\Esp32SensorController::class, 'getConfig'])->name('api.sensor.esp32.config.get');
+});
+
+// API Alertas — polling para popup de emergencia (autenticado)
+Route::middleware('auth')->group(function () {
+    Route::get('/api/alertas/ultimas', [App\Http\Controllers\AlertaController::class, 'ultimas'])->name('api.alertas.ultimas');
+    Route::post('/api/alertas/marcar-leidas', [App\Http\Controllers\AlertaController::class, 'marcarLeidas'])->name('api.alertas.marcar-leidas');
 });
 
 // Endpoint para actualizar datos desde Firebase (para sincronización)
@@ -272,18 +278,23 @@ Route::middleware(['auth','role:tecnico|administrador-area|administrador-princip
 // RUTAS DE SISTEMA (backup, cache, etc.)
 // ========================================
 Route::middleware(['auth', 'role:administrador-principal|administrador-area|tecnico'])->group(function () {
-    // Backups (solo admin-principal puede modificar)
+    // Backups contienen información sensible: acceso exclusivo al administrador principal.
+    Route::middleware('role:administrador-principal')->group(function () {
     Route::get('/backups', [App\Http\Controllers\BackupController::class, 'index'])->name('backups.index');
     Route::post('/api/backups/create', [App\Http\Controllers\BackupController::class, 'create'])->name('backup.create');
     Route::get('/api/backups/list', [App\Http\Controllers\BackupController::class, 'list'])->name('backup.list');
     Route::get('/api/backups/download/{filename}', [App\Http\Controllers\BackupController::class, 'download'])->name('backup.download');
     Route::delete('/api/backups/{filename}', [App\Http\Controllers\BackupController::class, 'delete'])->name('backup.delete');
+    });
 
     // Auditoría
     Route::get('/auditoria', [App\Http\Controllers\AuditController::class, 'index'])->name('auditoria.index');
     Route::get('/auditoria/{id}', [App\Http\Controllers\AuditController::class, 'show'])->name('auditoria.show');
-    Route::get('/auditoria/limpiar/antiguos', [App\Http\Controllers\AuditController::class, 'limpiar'])->name('auditoria.limpiar');
 });
+
+Route::post('/auditoria/limpiar/antiguos', [App\Http\Controllers\AuditController::class, 'limpiar'])
+    ->middleware(['auth', 'role:administrador-principal'])
+    ->name('auditoria.limpiar');
 
 Route::middleware(['auth', 'role:administrador-principal'])->prefix('admin/system')->group(function () {
     Route::post('/backup/{type?}', [App\Http\Controllers\BackupController::class, 'create'])->name('system.backup.create');

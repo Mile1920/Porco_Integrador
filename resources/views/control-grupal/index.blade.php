@@ -310,7 +310,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function seleccionarTrabajadores(actionType) {
     const checkboxes = document.querySelectorAll(`input[data-group="${actionType}"]:checked`);
-    const trabajadorIds = Array.from(checkboxes).map(cb => cb.dataset.trabajadorId);
+    const trabajadorIds = Array.from(checkboxes)
+        .map(cb => cb.dataset.trabajadorId)
+        .filter(id => /^\d+$/.test(id || ''));
 
     if (trabajadorIds.length === 0) {
         showWarning('Por favor, seleccione al menos un trabajador');
@@ -318,22 +320,31 @@ function seleccionarTrabajadores(actionType) {
     }
 
     if (actionType.startsWith('ingreso-')) {
-        // Mostrar modal de ingreso
-        document.getElementById('trabajadoresSeleccionados').innerHTML =
-            `<p><strong>${trabajadorIds.length}</strong> trabajadores seleccionados</p>`;
-        document.getElementById('formIngresoGrupal').insertAdjacentHTML('afterbegin',
-            trabajadorIds.map(id => `<input type="hidden" name="trabajador_ids[]" value="${id}">`).join('')
-        );
+        mostrarSeleccionGrupal('trabajadoresSeleccionados', 'formIngresoGrupal', trabajadorIds);
         new bootstrap.Modal(document.getElementById('modalIngresoGrupal')).show();
     } else if (actionType.startsWith('salida-')) {
-        // Mostrar modal de salida
-        document.getElementById('trabajadoresSeleccionadosSalida').innerHTML =
-            `<p><strong>${trabajadorIds.length}</strong> trabajadores seleccionados</p>`;
-        document.getElementById('formSalidaGrupal').insertAdjacentHTML('afterbegin',
-            trabajadorIds.map(id => `<input type="hidden" name="trabajador_ids[]" value="${id}">`).join('')
-        );
+        mostrarSeleccionGrupal('trabajadoresSeleccionadosSalida', 'formSalidaGrupal', trabajadorIds);
         new bootstrap.Modal(document.getElementById('modalSalidaGrupal')).show();
     }
+}
+
+function mostrarSeleccionGrupal(contenedorId, formularioId, trabajadorIds) {
+    const contenedor = document.getElementById(contenedorId);
+    const cantidad = document.createElement('p');
+    const strong = document.createElement('strong');
+    strong.textContent = String(trabajadorIds.length);
+    cantidad.append(strong, document.createTextNode(' trabajadores seleccionados'));
+    contenedor.replaceChildren(cantidad);
+
+    const formulario = document.getElementById(formularioId);
+    formulario.querySelectorAll('input[name="trabajador_ids[]"]').forEach(input => input.remove());
+    trabajadorIds.forEach(id => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'trabajador_ids[]';
+        input.value = id;
+        formulario.insertBefore(input, formulario.firstChild);
+    });
 }
 
 // Select all functionality and manual actions
@@ -424,7 +435,7 @@ function verHistorial(trabajadorId, nombre) {
         <div class="modal fade" id="historialModal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header" style="background: linear-gradient(135deg, #50c878, #2e8b57); color: white;">
+                    <div class="modal-header" style="background: linear-gradient(135deg, var(--porco-wine), var(--porco-raspberry)); color: white;">
                         <h5 class="modal-title">
                             <img src="/img/Minero.png" alt="Historial" style="width: 24px; height: 24px; margin-right: 10px; filter: brightness(0) invert(1);">
                             Historial del Día - ${nombre}
@@ -455,29 +466,61 @@ function verHistorial(trabajadorId, nombre) {
     })
     .then(response => response.json())
     .then(data => {
-        let content = '<div class="table-responsive"><table class="table table-striped table-sm"><thead class="table-dark"><tr><th>Hora</th><th>Tipo</th><th>Área</th><th>Subnivel</th></tr></thead><tbody>';
-
+        const content = document.createElement('div');
+        content.className = 'table-responsive';
+        const table = document.createElement('table');
+        table.className = 'table table-striped table-sm';
+        const thead = document.createElement('thead');
+        thead.className = 'table-dark';
+        const heading = document.createElement('tr');
+        ['Hora', 'Tipo', 'Área', 'Subnivel'].forEach(label => {
+            const th = document.createElement('th');
+            th.scope = 'col';
+            th.textContent = label;
+            heading.appendChild(th);
+        });
+        thead.appendChild(heading);
+        const tbody = document.createElement('tbody');
         if (data.historial && data.historial.length > 0) {
             data.historial.forEach(item => {
                 const fecha = new Date(item.registrado_en);
-                const hora = fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-
-                content += `<tr>
-                    <td><strong>${hora}</strong></td>
-                    <td><span class="badge ${item.tipo === 'ingreso' ? 'bg-success' : 'bg-warning'}">${item.tipo === 'ingreso' ? 'Entrada' : 'Salida'}</span></td>
-                    <td>${item.area?.nombre || '-'}</td>
-                        <td><small class="text-muted">${item.observacion || '-'}</small></td>
-                </tr>`;
+                const row = document.createElement('tr');
+                const timeCell = document.createElement('td');
+                const time = document.createElement('strong');
+                time.textContent = Number.isNaN(fecha.getTime()) ? '—' : fecha.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+                timeCell.appendChild(time);
+                row.appendChild(timeCell);
+                const typeCell = document.createElement('td');
+                const badge = document.createElement('span');
+                badge.className = 'badge ' + (item.tipo === 'ingreso' ? 'bg-success' : 'bg-warning');
+                badge.textContent = item.tipo === 'ingreso' ? 'Entrada' : 'Salida';
+                typeCell.appendChild(badge);
+                row.appendChild(typeCell);
+                [item.area?.nombre || '—', item.observacion || '—'].forEach(value => {
+                    const cell = document.createElement('td');
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
             });
         } else {
-            content += '<tr><td colspan="4" class="text-center text-muted py-3"><i class="fas fa-info-circle me-2"></i>No hay registros para hoy</td></tr>';
+            const row = document.createElement('tr');
+            const cell = document.createElement('td');
+            cell.colSpan = 4;
+            cell.className = 'text-center text-muted py-3';
+            cell.textContent = 'No hay registros para hoy';
+            row.appendChild(cell);
+            tbody.appendChild(row);
         }
-
-        content += '</tbody></table></div>';
-        document.querySelector('#historialModal .modal-body').innerHTML = content;
+        table.append(thead, tbody);
+        content.appendChild(table);
+        document.querySelector('#historialModal .modal-body').replaceChildren(content);
     })
     .catch(error => {
-        document.querySelector('#historialModal .modal-body').innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Error al cargar el historial</div>';
+        const errorMessage = document.createElement('div');
+        errorMessage.className = 'alert alert-danger';
+        errorMessage.textContent = 'Error al cargar el historial';
+        document.querySelector('#historialModal .modal-body').replaceChildren(errorMessage);
         console.error('Error al cargar historial:', error);
     });
 

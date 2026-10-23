@@ -6,8 +6,8 @@
     <style>
         @page { margin: 20mm 15mm; }
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; color: #333; }
-        h1 { font-size: 18pt; color: #2e8b57; margin-bottom: 5px; }
-        h2 { font-size: 13pt; color: #0d47a1; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+        h1 { font-size: 18pt; color: #c52d59; margin-bottom: 5px; }
+        h2 { font-size: 13pt; color: #651c38; margin-top: 20px; margin-bottom: 8px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
         h3 { font-size: 11pt; color: #555; margin: 12px 0 6px; }
         .header { text-align: center; margin-bottom: 20px; }
         .header img { width: 70px; }
@@ -15,11 +15,11 @@
         .header p { font-size: 9pt; color: #777; }
         table { width: 100%; border-collapse: collapse; margin: 8px 0; }
         th, td { padding: 5px 8px; text-align: left; border: 1px solid #ddd; }
-        th { background: #2e8b57; color: #fff; font-size: 9pt; }
+        th { background: #c52d59; color: #fff; font-size: 9pt; }
         td { font-size: 9pt; }
         .totals { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
         .totals .card { flex: 1; min-width: 100px; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; text-align: center; }
-        .totals .card .val { font-size: 16pt; font-weight: bold; color: #2e8b57; }
+        .totals .card .val { font-size: 16pt; font-weight: bold; color: #c52d59; }
         .totals .card .lbl { font-size: 7pt; color: #888; text-transform: uppercase; }
         .footer { text-align: center; margin-top: 30px; font-size: 8pt; color: #aaa; border-top: 1px solid #eee; padding-top: 8px; }
         .page-break { page-break-after: always; }

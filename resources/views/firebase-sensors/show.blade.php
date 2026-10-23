@@ -200,9 +200,9 @@ function initChart() {
         const date = new Date(parseInt(timestamp));
 
         labels.push(date.toLocaleTimeString());
-        tempData.push(reading.temperatura || null);
-        humidityData.push(reading.humedad || null);
-        pm25Data.push(reading.pm2_5 || null);
+        tempData.push(reading.temperatura ?? null);
+        humidityData.push(reading.humedad ?? null);
+        pm25Data.push(reading.pm2_5 ?? null);
     });
 
     sensorChart = new Chart(ctx, {

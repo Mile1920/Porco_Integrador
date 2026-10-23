@@ -36,7 +36,7 @@
             </div>
             <div class="card-body text-center py-4" id="esp32Status">
                 <div class="mb-3">
-                    <span class="status-dot" id="statusDot" style="background: #ffc107;"></span>
+                    <span class="status-dot" id="statusDot" style="background: var(--porco-warning);"></span>
                     <span id="statusText" style="font-size: 1.2rem; font-weight: 600;">Verificando...</span>
                 </div>
                 <div id="latencyInfo" class="mb-3" style="display:none;">
@@ -141,7 +141,7 @@ function verificarESP32() {
     var lastCheck = document.getElementById('lastCheck');
 
     btnC.disabled = true; btnD.disabled = true;
-    dot.style.background = '#ffc107';
+    dot.style.background = 'var(--porco-warning)';
     text.textContent = 'Verificando...';
 
     fetch('{{ route("api.sensor.esp32.status") }}')
@@ -150,12 +150,12 @@ function verificarESP32() {
             lastCheck.textContent = new Date().toLocaleTimeString();
             esp32Conectado = data.connected;
             if (data.connected) {
-                dot.style.background = '#4caf50';
+                dot.style.background = 'var(--porco-normal)';
                 text.textContent = 'Conectado';
                 btnC.disabled = true; btnD.disabled = false;
                 if (data.latency_ms) { latDiv.style.display = 'block'; latMs.textContent = data.latency_ms; }
             } else {
-                dot.style.background = '#f44336';
+                dot.style.background = 'var(--porco-critical)';
                 text.textContent = 'Desconectado';
                 btnC.disabled = false; btnD.disabled = true;
                 latDiv.style.display = 'none';
@@ -163,7 +163,7 @@ function verificarESP32() {
         })
         .catch(function() {
             lastCheck.textContent = new Date().toLocaleTimeString();
-            dot.style.background = '#f44336';
+            dot.style.background = 'var(--porco-critical)';
             text.textContent = 'Desconectado';
             btnC.disabled = false; btnD.disabled = true;
             esp32Conectado = false;
@@ -179,7 +179,7 @@ function conectarESP32() {
 function desconectarESP32() {
     if (intervaloVerificacion) { clearInterval(intervaloVerificacion); intervaloVerificacion = null; }
     esp32Conectado = false;
-    document.getElementById('statusDot').style.background = '#f44336';
+    document.getElementById('statusDot').style.background = 'var(--porco-critical)';
     document.getElementById('statusText').textContent = 'Desconectado';
     document.getElementById('btnConnect').disabled = false;
     document.getElementById('btnDisconnect').disabled = true;
@@ -217,17 +217,17 @@ document.getElementById('esp32ConfigForm').addEventListener('submit', function(e
     .then(function(data) {
         if (data.success) {
             msg.textContent = 'Guardado correctamente';
-            msg.style.color = '#4caf50';
+            msg.style.color = 'var(--porco-normal)';
             cancelarEditar();
             setTimeout(function() { msg.textContent = ''; }, 3000);
         } else {
             msg.textContent = 'Error al guardar';
-            msg.style.color = '#f44336';
+            msg.style.color = 'var(--porco-critical)';
         }
     })
     .catch(function() {
         msg.textContent = 'Error de conexión';
-        msg.style.color = '#f44336';
+        msg.style.color = 'var(--porco-critical)';
     })
     .finally(function() { btn.disabled = false; });
 });
